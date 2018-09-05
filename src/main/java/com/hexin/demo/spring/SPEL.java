@@ -44,7 +44,7 @@ public class SPEL {
         context.setVariable("myName", name);                        // 为了让表达式可以访问该对象, 先把对象放到上下文中
         ExpressionParser parser = new SpelExpressionParser();
         // 访问变量
-        String value = parser.parseExpression("#myName").getValue(context, String.class);// Tom , 使用变量
+        String value = parser.parseExpression("#myName+'_'+#myName").getValue(context, String.class);// Tom , 使用变量
 //        String value1 = parser.parseExpression("#{myName}").getValue(context, String.class);// Tom , 使用变量
         // 直接使用构造方法创建对象
         String value1 = parser.parseExpression("new String('aaa')").getValue(String.class);// aaa
@@ -113,7 +113,7 @@ public class SPEL {
 
         Person person = new Person("Tom", 18); // 一个普通的POJO
         context.setVariable("person", person);
-        String value6 = parser.parseExpression("他的名字为#{#person.name}", new TemplateParserContext()).getValue(context, String.class);// 他的名字为Tom
+        String value6 = parser.parseExpression("他的名字为${#person.name}", new TemplateParserContext("${","}")).getValue(context, String.class);// 他的名字为Tom
         System.out.println(value6);
 
 

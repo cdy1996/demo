@@ -3,12 +3,15 @@ package com.hexin.demo.java8;
 import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -69,35 +72,33 @@ public class Test {
 //        });
 
 
-
-
     }
 
     @org.junit.Test
-    public  void testStream(){
+    public void testStream() {
         Stream.iterate(new int[]{0, 1},
-                n -> new int[]{n[n.length-1], n[n.length - 2] + n[n.length-1]})
+                n -> new int[]{n[n.length - 1], n[n.length - 2] + n[n.length - 1]})
                 .limit(20)
-                .forEach(e-> System.out.println(Arrays.toString(e)));
+                .forEach(e -> System.out.println(Arrays.toString(e)));
 
         Stream.iterate(new int[]{0, 1},
-                n -> new int[]{n[n.length-1], n[n.length - 2] + n[n.length-1]})
+                n -> new int[]{n[n.length - 1], n[n.length - 2] + n[n.length - 1]})
                 .limit(20)
-                .flatMap(a-> Arrays.stream(a).boxed())
-                .forEach(e-> System.out.println(e));
+                .flatMap(a -> Arrays.stream(a).boxed())
+                .forEach(e -> System.out.println(e));
 
         Stream.iterate(new int[]{0, 1},
-                n -> new int[]{n[n.length-1], n[n.length - 2] + n[n.length-1]})
+                n -> new int[]{n[n.length - 1], n[n.length - 2] + n[n.length - 1]})
                 .limit(20)
-                .map(t->t[0])
-                .forEach(e-> System.out.println(e+","));
+                .map(t -> t[0])
+                .forEach(e -> System.out.println(e + ","));
 
     }
 
 
     @org.junit.Test
-    public  void testCollect(){
-                List<Dish> menu = Arrays.asList(
+    public void testCollect() {
+        List<Dish> menu = Arrays.asList(
                 new Dish("猪肉", false, 800, Dish.Type.肉),
                 new Dish("牛肉", false, 700, Dish.Type.肉),
                 new Dish("肌肉", false, 400, Dish.Type.肉),
@@ -106,79 +107,86 @@ public class Test {
                 new Dish("季果", true, 120, Dish.Type.其他),
                 new Dish("披萨", true, 550, Dish.Type.其他),
                 new Dish("对虾", false, 300, Dish.Type.鱼),
-                new Dish("三文鱼", false, 450, Dish.Type.鱼) );
+                new Dish("三文鱼", false, 450, Dish.Type.鱼));
 //
 //        String shortMenu = menu.stream().map(Dish::getName).collect(joining(","));
 //        System.out.println(shortMenu);
 //
 //        Map<CaloricLevel, List<Dish>> dishesByCaloricLevel =
-                menu.stream().collect(
+        menu.stream().collect(
                 groupingBy(dish -> {
                     if (dish.getCalories() <= 400) return CaloricLevel.DIET;
                     else if (dish.getCalories() <= 700) return
                             CaloricLevel.NORMAL;
                     else return CaloricLevel.FAT;
-                } ));
-
+                }));
 
 
 //        Map<Dish.Type, Map<CaloricLevel, List<Dish>>> dishesByTypeCaloricLevel =
-                menu.stream().collect(
-                        groupingBy(Dish::getType,
-                                groupingBy(dish -> {
-                                    if (dish.getCalories() <= 400) return CaloricLevel.DIET;
-                                    else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
-                                    else return CaloricLevel.FAT;
-                                } )
-                        )
-                );
+        menu.stream().collect(
+                groupingBy(Dish::getType,
+                        groupingBy(dish -> {
+                            if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+                            else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+                            else return CaloricLevel.FAT;
+                        })
+                )
+        );
 
 //        Map<Dish.Type, Optional<Dish>> mostCaloricByType =
-                menu.stream()
-                        .collect(groupingBy(Dish::getType,
-                                maxBy(comparingInt(Dish::getCalories))));
+        menu.stream()
+                .collect(groupingBy(Dish::getType,
+                        maxBy(comparingInt(Dish::getCalories))));
 
 //        Map<Dish.Type, Dish> mostCaloricByType =
-                menu.stream()
-                        .collect(groupingBy(Dish::getType,
-                                collectingAndThen(
-                                        maxBy(comparingInt(Dish::getCalories)),
-                                        Optional::get)));
+        menu.stream()
+                .collect(groupingBy(Dish::getType,
+                        collectingAndThen(
+                                maxBy(comparingInt(Dish::getCalories)),
+                                Optional::get)));
 
 
-        Map<Dish.Type, Integer> collect1 = menu.stream().collect(groupingBy(Dish::getType,
-                summingInt(Dish::getCalories)));
+//        Map<Dish.Type, Integer> collect1 =
+        menu.stream()
+                .collect(
+                        groupingBy(Dish::getType,
+                                summingInt(Dish::getCalories)));
 
-        Map<Dish.Type, Integer> collect2 = menu.stream().collect(groupingBy(Dish::getType,
+//        Map<Dish.Type, Integer> collect2 =
+        menu.stream().collect(groupingBy(Dish::getType,
                 reducing(0, Dish::getCalories, Integer::sum)));
 
-        Map<Dish.Type, Optional<Dish>> collect = menu.stream().collect(groupingBy(Dish::getType,
+//        Map<Dish.Type, Optional<Dish>> collect =
+        menu.stream().collect(groupingBy(Dish::getType,
                 minBy(comparingInt(Dish::getCalories))
         ));
 
 //        Map<Boolean, List<Dish>> partitionedMenu =
-                menu.stream().collect(partitioningBy(Dish::isVegetarian));
+        menu.stream().collect(partitioningBy(Dish::isVegetarian));
 
 
-                menu.stream().collect(
-                        partitioningBy(Dish::isVegetarian,
-                                collectingAndThen(
-                                        maxBy(Comparator.comparingInt(Dish::getCalories)),
-                                        Optional::get
-                                )
+        menu.stream().collect(
+                partitioningBy(Dish::isVegetarian,
+                        collectingAndThen(
+                                maxBy(Comparator.comparingInt(Dish::getCalories)),
+                                Optional::get
                         )
-                );
-        Map<Boolean, Map<Boolean, List<Dish>>> collect3 = menu.stream().collect(partitioningBy(Dish::isVegetarian,
+                )
+        );
+//        Map<Boolean, Map<Boolean, List<Dish>>> collect3 =
+        menu.stream().collect(partitioningBy(Dish::isVegetarian,
                 partitioningBy(d -> d.getCalories() > 500)));
 
-        Map<Boolean, Long> collect4 = menu.stream().collect(partitioningBy(Dish::isVegetarian,
+//        Map<Boolean, Long> collect4 =
+        menu.stream().collect(partitioningBy(Dish::isVegetarian,
                 counting()));
+
 
 
     }
 
 
-    public enum CaloricLevel { DIET, NORMAL, FAT }
+    public enum CaloricLevel {DIET, NORMAL, FAT}
 
     public boolean isPrime(int candidate) {
         int candidateRoot = (int) Math.sqrt((double) candidate);
@@ -191,7 +199,7 @@ public class Test {
      * 质数的判定
      */
     @org.junit.Test
-    public void testStream3(){
+    public void testStream3() {
         Map<Boolean, List<Integer>> collect = IntStream.rangeClosed(2, 10).boxed()
                 .collect(
                         partitioningBy(candidate -> isPrime(candidate)));
@@ -203,7 +211,7 @@ public class Test {
 
 
     @org.junit.Test
-    public void testCollector(){
+    public void testCollector() {
         List<Dish> menu = Arrays.asList(
                 new Dish("猪肉", false, 800, Dish.Type.肉),
                 new Dish("牛肉", false, 700, Dish.Type.肉),
@@ -213,11 +221,10 @@ public class Test {
                 new Dish("季果", true, 120, Dish.Type.其他),
                 new Dish("披萨", true, 550, Dish.Type.其他),
                 new Dish("对虾", false, 300, Dish.Type.鱼),
-                new Dish("三文鱼", false, 450, Dish.Type.鱼) );
+                new Dish("三文鱼", false, 450, Dish.Type.鱼));
         List<Dish> collect = menu.stream().collect(new ToListCollector<Dish>());
 
         ArrayList<Object> collect1 = menu.stream().collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-
 
 
     }
@@ -225,10 +232,11 @@ public class Test {
 
     /**
      * 截取列表从0到第一个不符合条件的值的子列表
+     *
      * @param list 列表
      * @param p    条件
      * @param <A>  指定泛型
-     * @return     符合条件的子列表
+     * @return 符合条件的子列表
      */
     public static <A> List<A> takeWhile(List<A> list, Predicate<A> p) {
         int i = 0;
@@ -243,11 +251,12 @@ public class Test {
 
     /**
      * 判断是否是质数
-     * @param primes     质数列表列表
-     * @param candidate  指定的数
+     *
+     * @param primes    质数列表列表
+     * @param candidate 指定的数
      * @return 是否是质数
      */
-    public static boolean isPrime(List<Integer> primes, int candidate){
+    public static boolean isPrime(List<Integer> primes, int candidate) {
         int candidateRoot = (int) Math.sqrt((double) candidate);
         return takeWhile(primes, i -> i <= candidateRoot)
                 .stream()
@@ -274,7 +283,7 @@ public class Test {
     }
 
     @org.junit.Test
-    public void testWords(){
+    public void testWords() {
 //        System.out.println("Found " + countWordsIteratively(SENTENCE) + " words");
 
 //        Arrays.stream(SENTENCE.toCharArray()).
@@ -299,7 +308,7 @@ public class Test {
 
 
     @org.junit.Test
-    public void testDebug(){
+    public void testDebug() {
 //        List<Integer> points = Arrays.asList(1,2, 1/0);
 //        points.stream().forEach(System.out::println);
         List<Integer> numbers = Arrays.asList(2, 3, 4, 5);
@@ -317,7 +326,7 @@ public class Test {
 
 
     @org.junit.Test
-    public void testOptional(){
+    public void testOptional() {
 //        Person person= new Person();
 //        Optional<Person> optPerson = Optional.of(person);
 //        Optional<Optional<Car>> car = optPerson.map(Person::getCar);
@@ -328,7 +337,6 @@ public class Test {
 //                .map(Insurance::getName)
 //                .orElseThrow(RuntimeException::new);
 //                .orElse("Unknown");
-
 
 
         Properties props = new Properties();
@@ -343,38 +351,46 @@ public class Test {
         assertEquals(0, readDuration(props, "d"));
 
 
-
-
     }
 
 
-    public int readDuration(Properties props, String name){
+    public int readDuration(Properties props, String name) {
         return Optional.ofNullable(props.getProperty(name))
-                .flatMap(e->{
+                .flatMap(e -> {
                     try {
                         return Optional.of(Integer.parseInt(e));
                     } catch (NumberFormatException e1) {
                         return Optional.empty();
                     }
                 })
-                .filter(i->i>0)
+                .filter(i -> i > 0)
                 .orElse(0);
 
     }
 
 
-
     public class Person {
         private Optional<Car> car;
-        public Optional<Car> getCar() { return car; }
+
+        public Optional<Car> getCar() {
+            return car;
+        }
     }
+
     public class Car {
         private Optional<Insurance> insurance;
-        public Optional<Insurance> getInsurance() { return insurance; }
+
+        public Optional<Insurance> getInsurance() {
+            return insurance;
+        }
     }
+
     public class Insurance {
         private String name;
-        public String getName() { return name; }
+
+        public String getName() {
+            return name;
+        }
     }
 
 
@@ -395,7 +411,7 @@ public class Test {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return Math.random()*10000;
+            return Math.random() * 10000;
         }
 
         public String getName() {
@@ -409,7 +425,7 @@ public class Test {
             new Shop("BuyItAll"));
 
     @org.junit.Test
-    public void testCompleteFuture(){
+    public void testCompleteFuture() {
 
 
         List<String> collect = shops.stream()
@@ -440,6 +456,7 @@ public class Test {
 //                .collect(toList());
 //        System.out.println(collect1);
     }
+
     private final Executor executor =
             Executors.newFixedThreadPool(Math.min(shops.size(), 100),
                     r -> {
@@ -450,7 +467,7 @@ public class Test {
 
 
     @org.junit.Test
-    public void testLocal(){
+    public void testLocal() {
 
         LocalDate date = LocalDate.of(2014, 3, 18);
         int year = date.getYear();
@@ -467,8 +484,7 @@ public class Test {
         int second = time.getSecond();
 
         LocalDate date1 = LocalDate.parse("2014-03-18");
-        LocalTime time1= LocalTime.parse("13:45:20");
-
+        LocalTime time1 = LocalTime.parse("13:45:20");
 
 
         LocalDateTime dt1 = LocalDateTime.of(2014, Month.MARCH, 18, 13, 45, 20);
@@ -491,16 +507,17 @@ public class Test {
 
     }
 
-    static DoubleUnaryOperator curriedConverter(double f, double b){
+    static DoubleUnaryOperator curriedConverter(double f, double b) {
         return (double x) -> x * f + b;
     }
-    static Function<Double, Double> get(double f){
-        return x->x+f;
+
+    static Function<Double, Double> get(double f) {
+        return x -> x + f;
     }
 
     @org.junit.Test
-    public void testKLH(){
-        DoubleUnaryOperator convertCtoF = curriedConverter(9.0/5, 32);
+    public void testKLH() {
+        DoubleUnaryOperator convertCtoF = curriedConverter(9.0 / 5, 32);
         DoubleUnaryOperator convertUSDtoGBP = curriedConverter(0.6, 0);
         DoubleUnaryOperator convertKmtoMi = curriedConverter(0.6214, 0);
 
@@ -510,11 +527,47 @@ public class Test {
     class TrainJourney {
         public int price;
         public TrainJourney onward;
+
         public TrainJourney(int p, TrainJourney t) {
             price = p;
             onward = t;
         }
     }
 
+
+    public static Long handleService(Long l){
+        try {
+            Thread.sleep(1000);
+            System.out.println(Thread.currentThread().getName());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return l;
+    }
+    // 测试串行流性能
+    @org.junit.Test
+    public void test_sequential(){
+        long start = System.nanoTime();
+        long count = LongStream.range(0, 20).sequential().reduce(0L, (A,B)->{
+            handleService(1L);
+            return A + B;
+        });
+        Long end = System.nanoTime();
+        System.out.println("cost:" + (end -start)/1_000_000);
+        System.out.println(count);
+    }
+
+    // 测试并行流性能
+    @org.junit.Test
+    public void test_parallel(){
+        long start = System.nanoTime();
+        long count = LongStream.range(0, 20).parallel().reduce(0L, (A,B)->{
+            handleService(1L);
+            return A + B;
+        });
+        Long end = System.nanoTime();
+        System.out.println("cost:" + (end -start)/1_000_000);
+        System.out.println(count);
+    }
 
 }

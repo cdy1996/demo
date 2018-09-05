@@ -5,6 +5,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.subject.Subject;
+import org.junit.Test;
 
 /**
  * shiro
@@ -28,6 +29,30 @@ public class ITest {
 
         subject.logout();
         System.out.println("是否登录:" + subject.isAuthenticated());
+
+    }
+
+
+    @Test
+    public void test(){
+//        List<String> strings = new ArrayList<>();
+//        strings.add("123");
+//        Spliterator<String> spliterator = strings.spliterator();
+//        spliterator.forEachRemaining(e-> System.out.println(e));
+//
+//        var a = new ArrayList<String>();
+//
+//        a.add("!23");
+//
+//
+//        var map = new HashMap<String, String>(){
+//                int a = 0;
+//        };
+//
+//        strings.stream()
+//                .dropWhile(e->e.length()>1)
+//                .map(e -> e.length())
+//                .forEach(e -> System.out.println(e));
 
     }
 }

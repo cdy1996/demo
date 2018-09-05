@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @PropertySource("classpath:cd.properties")
-@ComponentScan(basePackages = {"spring"})
+//@ComponentScan(basePackages = {"spring"})
 public class Config {
 
     @Value("${title}")
