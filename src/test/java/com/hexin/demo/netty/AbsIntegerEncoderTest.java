@@ -1,5 +1,6 @@
 package com.hexin.demo.netty;
 
+import com.hexin.demo.netty.study.AbsIntegerEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -13,7 +14,6 @@ import static org.junit.Assert.assertTrue;
  * Created by viruser on 2018/6/11.
  */
 public class AbsIntegerEncoderTest {
-
 
     @Test
     public void encode() throws Exception {
