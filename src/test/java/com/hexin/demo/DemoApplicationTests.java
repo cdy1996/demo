@@ -1,26 +1,19 @@
 package com.hexin.demo;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 //@SpringBootTest
 public class DemoApplicationTests {
 
 	@Test
 	public void contextLoads() {
 
-		System.out.println("-----------------------------------");
-		List<String> uids = new ArrayList<>();
+		Calendar instance = Calendar.getInstance();
 
-		for (String s : uids) {
-
-			System.out.println(s);
-		}
+		System.out.println(instance.get(Calendar.HOUR_OF_DAY));
 	}
 
 }

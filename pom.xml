@@ -99,9 +99,9 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>4.1.25.Final</version>
-			<type>jar</type>
+		<!--	<type>jar</type>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/netty-all-4.1.25.Final.jar</systemPath>
+			<systemPath>${basedir}/lib/netty-all-4.1.25.Final.jar</systemPath>-->
 		</dependency>
 
 
