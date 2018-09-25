@@ -1,15 +1,17 @@
-package com.hexin.demo.spring;
+package com.hexin.demo.controller;
 
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.beans.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@MyComponment
-@Scope(value="session",proxyMode= ScopedProxyMode.TARGET_CLASS)
+@Component
+@Scope(value= WebApplicationContext.SCOPE_REQUEST,proxyMode= ScopedProxyMode.TARGET_CLASS)
 public class User {
 
     String username = Math.random()+"";

@@ -48,15 +48,12 @@ public class ThreadPoolTest {
 
         for (int i = 0; i <10; i++) {
             int finalI = i;
-            poolExecutor.execute(()->{
-                try {
-                    TimeUnit.SECONDS.sleep(1L);
-                } catch (InterruptedException e) {
-                }
-                System.out.println(finalI);
-            });
+            poolExecutor.execute(new MyTask());
+            ((ThreadPoolExecutor)poolExecutor).getActiveCount();
         }
-        poolExecutor.shutdown();
+
+
+/*        poolExecutor.shutdown();
         try {
             poolExecutor.execute(()->{
                 try {
@@ -90,7 +87,7 @@ public class ThreadPoolTest {
             });
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         System.in.read();
     }
 

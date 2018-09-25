@@ -2,10 +2,9 @@ package com.hexin.demo.spring;
 
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 
-@Configuration
+//@Configuration
 public class TestConfiguration2 {
 
 

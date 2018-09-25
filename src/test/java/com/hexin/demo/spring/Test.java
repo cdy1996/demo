@@ -1,14 +1,11 @@
 package com.hexin.demo.spring;
 
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-@RunWith(SpringJUnit4ClassRunner.class) //使用junit4进行测试
-@ContextConfiguration(classes = TestConfig.class) //加载配置文件
+//@RunWith(SpringJUnit4ClassRunner.class) //使用junit4进行测试
+//@ContextConfiguration(classes = TestConfig.class) //加载配置文件
 public class Test {
 
 
@@ -29,12 +26,19 @@ public class Test {
 //        annotationConfigApplicationContext.refresh();
 
 
-        User user = (User) applicationContext.getBean(User.class);
-//        User user4 = (User) applicationContext.getBean("user4");
-//        User user44 = (User) applicationContext.getBean("user44");
-        System.out.println(user);
-//        System.out.println(user4);
-//        System.out.println(user44);
+        Controller controller = (Controller) applicationContext.getBean("controller");
+        System.out.println(controller+""+controller.user);
+
+        Controller controller1 = (Controller) applicationContext.getBean("controller");
+        System.out.println(controller1+""+controller1.user);
+
+//        LookupMethodServiceImpl lookupMethodServiceImpl = (LookupMethodServiceImpl) applicationContext.getBean("lookupMethodServiceImpl");
+//        System.out.println(lookupMethodServiceImpl.getUser());
+//        System.out.println(lookupMethodServiceImpl.getUser());
+//        System.out.println(lookupMethodServiceImpl.getUser());
+//
+//        TransactionAspectSupport.currentTransactionStatus();
+//        TransactionSynchronizationManager.getCurrentTransactionName();
 
     }
 }
