@@ -2,13 +2,11 @@ package com.hexin.demo.netty.study;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
-
-import java.nio.charset.Charset;
 
 /**
  * Created by viruser on 2018/6/7.
@@ -18,8 +16,11 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+
+
         System.out.println("channel是活跃时，发送一条消息");
-        ctx.writeAndFlush(Unpooled.copiedBuffer("netty roks!", CharsetUtil.UTF_8));
+        ChannelFuture channelFuture = ctx.writeAndFlush(Unpooled.copiedBuffer("netty roks!", CharsetUtil.UTF_8));
+
     }
 
 

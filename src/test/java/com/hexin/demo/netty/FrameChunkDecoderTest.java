@@ -8,6 +8,8 @@ import io.netty.handler.codec.TooLongFrameException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +17,23 @@ import static org.junit.Assert.assertTrue;
  * Created by viruser on 2018/6/12.
  */
 public class FrameChunkDecoderTest {
+
+    public static FrameChunkDecoderTest tetst(){
+        return null;
+    }
+
+    @Test
+    public void testByteBuff(){
+        Charset utf8 = Charset.forName("UTF-8");
+        ByteBuf buf = Unpooled.copiedBuffer("Netty in Action rocks!", utf8);
+        System.out.println((char)buf.getByte(0));
+        int readerIndex = buf.readerIndex();
+        int writerIndex = buf.writerIndex();
+        buf.setByte(0, (byte)'B');
+        System.out.println((char)buf.getByte(0));
+        assert readerIndex == buf.readerIndex();
+        assert writerIndex == buf.writerIndex();
+    }
 
     @Test
     public void testFramesDecoded() {

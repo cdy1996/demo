@@ -17,7 +17,7 @@ public class ShiroTest {
 
     public static void main(String[] args) {
         SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();
-        simpleAccountRealm.addAccount("cdy", "123456","admin");
+        simpleAccountRealm.addAccount("cdy", "123456", "admin");
 
         DefaultSecurityManager securityManager = new DefaultSecurityManager();
         securityManager.setRealm(simpleAccountRealm);
@@ -26,22 +26,21 @@ public class ShiroTest {
         UsernamePasswordToken token = new UsernamePasswordToken("cdy", "123456");
         subject.login(token);
         System.out.println("是否登录:" + subject.isAuthenticated());
-        subject.checkRoles("admin");	//授权
+        subject.checkRoles("admin");    //授权
 //        subject.checkPermission("user:delete");
 
         subject.logout();
         System.out.println("是否登录:" + subject.isAuthenticated());
 
 
-        Function<String,String> f = a->a;
+        Function<String, String> f = a -> a;
 
-        
 
     }
 
 
     @Test
-    public void test(){
+    public void test() {
 //        List<String> strings = new ArrayList<>();
 //        strings.add("123");
 //        Spliterator<String> spliterator = strings.spliterator();
@@ -60,8 +59,6 @@ public class ShiroTest {
 //                .dropWhile(e->e.length()>1)
 //                .map(e -> e.length())
 //                .forEach(e -> System.out.println(e));
-
-
 
 
     }

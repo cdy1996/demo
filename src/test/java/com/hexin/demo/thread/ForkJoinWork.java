@@ -13,6 +13,8 @@ public class ForkJoinWork extends RecursiveTask<Long> {
         this.start = start;
     }
 
+
+
     @Override
     protected Long compute() {
         System.out.println(Thread.currentThread().getName());
@@ -25,15 +27,16 @@ public class ForkJoinWork extends RecursiveTask<Long> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(Thread.currentThread().getName());
             return 1L;
         } else {
             //没有拆分完毕就开始拆分
             start = start-1;//计算的两个值的中间值
             ForkJoinWork right = new ForkJoinWork(1);
-//            right.fork();//拆分，并压入线程队列
+            right.fork();//拆分，并压入线程队列
             ForkJoinWork left = new ForkJoinWork(start);
-//            left.fork();//拆分，并压入线程队列
-            invokeAll(right, left);
+            left.fork();//拆分，并压入线程队列
+//            invokeAll(right, left);
 
             //合并
             return right.join() + left.join();
@@ -45,7 +48,7 @@ public class ForkJoinWork extends RecursiveTask<Long> {
         long start = System.currentTimeMillis();
 //        Long compute = forkJoinWork.compute();
 
-
+        ForkJoinPool forkJoinPool1 = ForkJoinPool.commonPool();
 
         // 创建包含Runtime.getRuntime().availableProcessors()返回值作为个数的并行线程的ForkJoinPool    
         ForkJoinPool forkJoinPool = new ForkJoinPool(4);
@@ -53,6 +56,9 @@ public class ForkJoinWork extends RecursiveTask<Long> {
 //        ForkJoinTask<Long> submit = forkJoinPool.submit(new ForkJoinWork(4));
 //        Long aLong = submit.get();
         Long invoke = forkJoinPool.invoke(new ForkJoinWork(4));
+        forkJoinPool.execute(()->{
+            System.out.println("!23");
+        });
 //        forkJoinPool.awaitTermination(2, TimeUnit.SECONDS);//阻塞当前线程直到 ForkJoinPool 中所有的任务都执行结束
         // 关闭线程池
         System.out.println(System.currentTimeMillis()-start +"==>"+invoke);

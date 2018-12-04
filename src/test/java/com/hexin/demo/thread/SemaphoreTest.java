@@ -7,16 +7,15 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SemaphoreTest {
 
 
     public static void main(String[] args) throws IOException {
-
-
-
-
-
+        testReenrantReadWriteLock();
     }
 
     @Test
@@ -114,14 +113,13 @@ public class SemaphoreTest {
 
     }
 
-    public void testSemaphore(){
+    public static void testSemaphore(){
         Semaphore semaphore = new Semaphore(1);
         new Thread(()->{
             while(true) {
                 try {
                     semaphore.acquire();
                     System.out.println("111");
-                    Thread.sleep(1000L);
                     semaphore.release();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -133,7 +131,6 @@ public class SemaphoreTest {
                 try {
                     semaphore.acquire();
                     System.out.println("222");
-                    Thread.sleep(1000L);
                     semaphore.release();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -143,4 +140,56 @@ public class SemaphoreTest {
 
     }
 
+    public static void testReenrantLock(){
+        ReentrantLock lock = new ReentrantLock();
+        Condition condition = lock.newCondition();
+        new Thread(()->{
+                lock.lock();
+                System.out.println("111");
+            try {
+                condition.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            lock.unlock();
+        }).start();
+        new Thread(()->{
+                lock.lock();
+                System.out.println("222");
+            condition.signal();
+                lock.unlock();
+        }).start();
+
+    }
+
+    public static void testReenrantReadWriteLock(){
+        ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
+        ReentrantReadWriteLock.ReadLock lock = reentrantReadWriteLock.readLock();
+        ReentrantReadWriteLock.WriteLock writeLock = reentrantReadWriteLock.writeLock();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁1");
+            lock.unlock();
+        },"read1").start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁2");
+            lock.unlock();
+        },"read2").start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁3");
+            lock.unlock();
+        },"read3").start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁4");
+            lock.unlock();
+        },"read4").start();
+        new Thread(()->{
+            writeLock.lock();
+            System.out.println("写锁");
+            writeLock.unlock();
+        },"write").start();
+    }
 }

@@ -1,14 +1,12 @@
 package com.hexin.demo;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 public class EncoderTest {
 
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        String s = "肥蛇";
+       /* String s = "肥蛇";
         String encode = URLEncoder.encode(s,"utf-8");
         String dencode = URLDecoder.decode(s,"utf-8");
         String s2 = new String(s.getBytes("utf-8"), "iso-8859-1");
@@ -16,7 +14,23 @@ public class EncoderTest {
         System.out.println(encode);
         System.out.println(dencode);
         System.out.println(s2);
-        System.out.println(s1);
+        System.out.println(s1);*/
 
+
+        Abc abc = new Abc();
+        abc.println("!23");
+
+        aaa aaa = new EncoderTest().new aaa();
+    }
+
+    static class Abc {
+        public void println(String abc) {
+            System.out.println("123");
+        }
+    }
+    class aaa {
+        public void println(String abc) {
+            System.out.println("123");
+        }
     }
 }

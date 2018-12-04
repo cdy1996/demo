@@ -1,6 +1,5 @@
 package com.hexin.demo.thread;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -8,10 +7,15 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ReentrantLockTest {
     static ReentrantLock lock = new ReentrantLock();
+    Integer a= 1;
+
+    static final Object read = new Object();
+    static final Object write = new Object();
+
 
     public static void main(String[] args) {
 
-        new Thread(()->{
+      /*  new Thread(()->{
             try {
                 lock.tryLock();
                 System.out.println("thread拿到锁了");
@@ -24,7 +28,7 @@ public class ReentrantLockTest {
             }
 
         }).start();
-
+*/
 
 
         try {
@@ -38,5 +42,25 @@ public class ReentrantLockTest {
         }
 
 
+    }
+
+
+    public  Integer read (){
+        synchronized (read) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+            return a;
+        }
+    }
+
+    public synchronized void write (){
+        synchronized (write) {
+            synchronized (read) {
+                a= 2;
+                notifyAll();
+            }
+        }
     }
 }

@@ -6,13 +6,27 @@ package com.hexin.demo.event;
 public class ObserverTest {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         MyObservable myObservable = new MyObservable();
 
-        MyObserver myObserver = new MyObserver();
 
-        myObservable.addObserver(myObserver);
 
+
+
+
+        new Thread(()->{
+            MyObserver myObserver = new MyObserver();
+            myObservable.addObserver(myObserver);
+
+        },"111").start();
+        new Thread(()->{
+            MyObserver myObserver = new MyObserver();
+            myObservable.addObserver(myObserver);
+
+        },"222").start();
+
+
+        Thread.sleep(100L);
         myObservable.notifyObservers("hello");
     }
 }
