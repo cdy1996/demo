@@ -8,7 +8,7 @@ public class LogTest {
     public static Logger log = LoggerFactory.getLogger(LogTest.class);
 
     public static void main(String[] args) {
-        log.info("!23");
-        System.out.println("!23");
+        int i = 3;
+        System.out.println(i++ + i++ + ++i);
     }
 }
