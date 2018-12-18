@@ -27,5 +27,7 @@ public class FutureTest {
         test.start();
         String s = test.get();
         System.out.println(s);
+
+
     }
 }
