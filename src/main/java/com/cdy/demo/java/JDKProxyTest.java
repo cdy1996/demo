@@ -10,10 +10,28 @@ import java.lang.reflect.Proxy;
  * 2018/3/6 14:42
  */
 
+public class JDKProxyTest {
+    
+    public static void main(String[] args) {
+        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+        Foo1 foo = new Foo2();
+        InvocationHandlerImpl handler = new InvocationHandlerImpl(foo);
+//        Foo1 o = (Foo1)Proxy.newProxyInstance(foo.getClass().getClassLoader(), Foo1.class.getInterfaces(), handler);
+//        o.get();
+
+        Foo1 f = (Foo1) handler.newProxy(foo);
+        System.out.println(f.getClass());
+        f.get();
+//        f.before();
+//        f.before();
+
+    }
+}
+
 interface Foo1 {
-
+    
     void get();
-
+    
     void before();
 }
 
@@ -48,23 +66,5 @@ class InvocationHandlerImpl implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         System.out.println("jdk动态代理前 ");
         return method.invoke(foo, args);
-    }
-}
-
-public class JDKTest {
-    
-    public static void main(String[] args) {
-        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
-        Foo1 foo = new Foo2();
-        InvocationHandlerImpl handler = new InvocationHandlerImpl(foo);
-//        Foo1 o = (Foo1)Proxy.newProxyInstance(foo.getClass().getClassLoader(), Foo1.class.getInterfaces(), handler);
-//        o.get();
-
-        Foo1 f = (Foo1) handler.newProxy(foo);
-        System.out.println(f.getClass());
-        f.get();
-//        f.before();
-//        f.before();
-
     }
 }
