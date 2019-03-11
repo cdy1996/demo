@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import java.lang.annotation.*;
 
+/**
+ * 注解的派生 测试
+ */
 public class AnnotationTest {
 
     @Test

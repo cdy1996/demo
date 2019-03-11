@@ -1,4 +1,4 @@
-package com.cdy.demo.gof23Design;
+package com.cdy.demo.gof23Design.visitor;
 
 public class VisitorTest {
 

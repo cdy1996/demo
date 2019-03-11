@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
+/**
+ * 阻塞队列
+ */
 public class BlockQueueTest {
     static BlockingQueue<String> queue = new SynchronousQueue<>();
 

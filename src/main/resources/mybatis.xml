@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+
+        <!-- 打开延迟加载的开关 -->
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <!-- 将积极加载改为消极加载即按需要加载 -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!-- 允许JDBC支持生成的键。需要适合的驱动。如果设置为true则这个设置强制生成的键被使用，尽管一些驱动拒绝兼容但仍然有效（比如Derby） -->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!-- 使用列标签代替列名。不同的驱动在这方便表现不同。参考驱动文档或充分测试两种方法来决定所使用的驱动 -->
+        <setting name="useColumnLabel" value="true"/>
+        <!--是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <environments default="development">
+        <environment id="development">
+            <!--事务管理类型，JDBC表示直接使用JDBC的提交和回滚设置，依赖于数据源得到的连接来管理事务-->
+            <transactionManager type="JDBC"/>
+            <!--数据库连接池POOLED表示使用数据库连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/test"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <!-- 非注解的sql映射文件配置，如果使用mybatis注解，该mapper无需配置，
+                但是如果mybatis注解中包含@resultMap注解，则mapper必须配置，给resultMap注解使用 -->
+        <!--SQL代码和映射信息配置文件-->
+        <!--<mapper resource="com/shiyan2/dao/UserMapper.xml" />-->
+       <!-- <mapper resource="mybatis/User1Dao.xml"/>-->
+        <!--<mapper class="mq.UserDao"/>-->
+        <!--扫描包路径下所有xxMapper.xml文件-->
+        <package name="mybatis"/>
+
+    </mappers>
+</configuration>

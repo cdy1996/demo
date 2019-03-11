@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * nio reactor的一种实现
+ */
 public class Reactor implements Runnable {
 
     Selector selector;

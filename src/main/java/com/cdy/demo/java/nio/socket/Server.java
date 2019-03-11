@@ -1,40 +1,37 @@
-package com.cdy.demo.java.nio;
+package com.cdy.demo.java.nio.socket;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
-public class Client {
+public class Server {
 
     Selector selector;
-    static Charset charset = Charset.forName("utf-8");
+    Charset charset = Charset.forName("utf-8");
     ByteBuffer buffer = ByteBuffer.allocate(1024);
-    static SocketChannel channel;
+    Map<String, SocketChannel> users = new HashMap<>();
 
-    public Client(int port) {
+    public Server(int port) {
         try {
-            channel = SocketChannel.open();
+            ServerSocketChannel channel = ServerSocketChannel.open();
             channel.configureBlocking(false);
-
-            channel.connect(new InetSocketAddress("127.0.0.1", port));
+            channel.bind(new InetSocketAddress(port));
 
             selector = Selector.open();
-            channel.register(selector, SelectionKey.OP_CONNECT);
+            channel.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-
-    public void process() throws IOException {
+    public void listen() throws IOException {
         while (true) {
             int count = selector.select();
             if (count == 0) continue;
@@ -45,14 +42,19 @@ public class Client {
             while (iterator.hasNext()) {
                 SelectionKey next = iterator.next();
                 iterator.remove();
-                if (next.isConnectable()) {
+                if (next.isAcceptable()) {
 
-                    SocketChannel channel = (SocketChannel) next.channel();
+                    ServerSocketChannel channel = (ServerSocketChannel) next.channel();
                     System.out.println(channel + " 可连接");
-                    channel.finishConnect();
-                    channel.register(selector, SelectionKey.OP_READ);
+                    SocketChannel client = channel.accept();
+                    client.configureBlocking(false);
+                    System.out.println("接收客户端 " + client);
+                    client.register(selector, SelectionKey.OP_READ);
+                    client.write(charset.encode("#name#"));
+//                    next.interestOps(SelectionKey.OP_ACCEPT);
 
                 }
+                String name = "";
                 if (next.isReadable()) {
                     SocketChannel channel = null;
                     try {
@@ -63,13 +65,31 @@ public class Client {
 //                        String receive = new String(buffer.array(),"utf-8");
                         buffer.flip();
                         String receive = new String(charset.decode(buffer).array());
+//                        System.out.println("服务端接收数据 " + receive);
 
-                        System.out.println(receive);
                         buffer.clear();
-//                        channel.write(charset.encode(receive));
+                        if (receive.startsWith("#name#")) {
+                            String user = receive.substring(5);
+                            users.put(user, channel);
+                            receive = "加入聊天室";
+                            name = user;
+                        }
+
+                        for (Map.Entry<String, SocketChannel> entry : users.entrySet()) {
+                            if (entry.getValue() == channel) {
+                                name = entry.getKey();
+                            }
+
+                        }
+                        for (Map.Entry<String, SocketChannel> entry : users.entrySet()) {
+                            if (entry.getValue() != channel)
+                                entry.getValue().write(charset.encode(name + ":" + receive));
+                        }
+
 //                        next.interestOps(SelectionKey.OP_WRITE);
                     } catch (IOException e) {
                         System.out.println("客户端异常 " + channel);
+                        users.remove(name);
                         channel.close();
                         next.cancel();
                     }
@@ -84,33 +104,12 @@ public class Client {
 //                    channel.write(wrap);
 ////                    next.interestOps(SelectionKey.OP_READ);
 //                }
-
             }
         }
     }
 
     public static void main(String[] args) throws IOException {
-        new Thread(() -> {
-            try {
-                new Client(8999).process();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("请输入");
-        while (scanner.hasNext()) {
-            String s = scanner.nextLine();
-            ByteBuffer wrap = ByteBuffer.wrap(s.getBytes(charset));
-            try {
-                channel.write(wrap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("请输入");
-        }
+        new Server(8999).listen();
     }
 
 }

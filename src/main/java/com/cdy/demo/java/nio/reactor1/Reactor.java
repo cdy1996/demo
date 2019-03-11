@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Anur IjuoKaruKas on 2018/12/12
+ * nio reactor的一种实现
  */
 public class Reactor {
 
