@@ -13,18 +13,16 @@ import java.lang.reflect.Proxy;
 public class JDKProxyTest {
     
     public static void main(String[] args) {
-        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+//        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
         Foo1 foo = new Foo2();
         InvocationHandlerImpl handler = new InvocationHandlerImpl(foo);
 //        Foo1 o = (Foo1)Proxy.newProxyInstance(foo.getClass().getClassLoader(), Foo1.class.getInterfaces(), handler);
 //        o.get();
 
         Foo1 f = (Foo1) handler.newProxy(foo);
-        System.out.println(f.getClass());
         f.get();
-//        f.before();
-//        f.before();
 
+        System.out.println(f.getClass());
     }
 }
 
@@ -39,7 +37,6 @@ class Foo2 implements Foo1 {
     
     @Override
     public void get() {
-        System.out.println("外部方法");
         before();
     }
     
@@ -65,6 +62,10 @@ class InvocationHandlerImpl implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         System.out.println("jdk动态代理前 ");
-        return method.invoke(foo, args);
+        try {
+            return method.invoke(foo, args);
+        } finally {
+            System.out.println("jdk动态代理后 ");
+        }
     }
 }

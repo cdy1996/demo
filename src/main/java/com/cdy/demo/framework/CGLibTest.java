@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 public class CGLibTest {
 
     public static void main(String[] args) {
-        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "D://tmp");
+        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "D:\\demo\\demo\\target\\classes\\com\\cdy\\demo\\framework");
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(CGLibTest.class);
         enhancer.setCallback(new methodInterceptorImpl());
@@ -28,7 +28,11 @@ public class CGLibTest {
     }
 
     public void test() {
-        log.info("enhancer demo thinkInJava");
+        test2();
+    }
+
+    public void test2() {
+        log.info("内部方法");
     }
 
     private static class methodInterceptorImpl implements MethodInterceptor {

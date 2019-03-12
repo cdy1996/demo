@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+
+   <!-- <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+
+
+    <appender name="my" class="com.cdy.demo.framework.logback.MyAppender">
+
+    </appender>
+    <appender name="my2" class="com.cdy.demo.framework.logback.MyAppender">
+
+    </appender>
+
+    <root level="INFO">
+        <!--<appender-ref ref="CONSOLE" />-->
+        <appender-ref ref="my" />
+        <appender-ref ref="my2" />
+    </root>
+
+</configuration>
