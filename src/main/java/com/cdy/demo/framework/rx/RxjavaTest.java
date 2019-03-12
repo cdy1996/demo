@@ -4,6 +4,7 @@ import io.reactivex.*;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import org.junit.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -13,7 +14,25 @@ import java.io.IOException;
 public class RxjavaTest {
 
 
-    public static void main(String[] args) {
+    @Test
+    public void test() {
+        Observable<LoginApiBean> observable = Observable.create(new ObservableOnSubscribe<LoginApiBean>() {
+            @Override
+            public void subscribe(ObservableEmitter<LoginApiBean> e) throws Exception {
+                System.out.println(Thread.currentThread().getName() + " 用户登录");
+                e.onNext(login());
+            }
+        });
+
+//       1.x 写法 BlockingObservable.from(observable).toFuture();
+        UserInfoBean userInfoBean = observable.blockingFirst().getUserInfoBean();
+
+        System.out.println(userInfoBean);
+
+    }
+
+    @Test
+    public void flowable() {
 
 
         Flowable.create(new FlowableOnSubscribe<LoginApiBean>() {
@@ -26,7 +45,7 @@ public class RxjavaTest {
                 e.onNext(login());
                 e.onComplete();
             }
-        },BackpressureStrategy.BUFFER) //调用登录接口
+        }, BackpressureStrategy.BUFFER) //调用登录接口
                 .observeOn(Schedulers.newThread())  //调度线程
                 .map(new Function<LoginApiBean, UserInfoBean>() {
 
@@ -99,7 +118,8 @@ public class RxjavaTest {
     }
 
 
-    public void testObservable(){
+    @Test
+    public void testObservable() {
         Observable.create(new ObservableOnSubscribe<LoginApiBean>() {
             @Override
             public void subscribe(ObservableEmitter<LoginApiBean> e) throws Exception {

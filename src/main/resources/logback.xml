@@ -2,7 +2,7 @@
 <configuration>
 
 
-   <!-- <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
 
     <appender name="my" class="com.cdy.demo.framework.logback.MyAppender">
@@ -13,9 +13,9 @@
     </appender>
 
     <root level="INFO">
-        <!--<appender-ref ref="CONSOLE" />-->
-        <appender-ref ref="my" />
-        <appender-ref ref="my2" />
+        <appender-ref ref="CONSOLE" />
+        <!--<appender-ref ref="my" />
+        <appender-ref ref="my2" />-->
     </root>
 
 </configuration>
