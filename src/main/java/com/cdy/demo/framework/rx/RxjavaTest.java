@@ -11,9 +11,15 @@ import org.reactivestreams.Subscription;
 import java.io.IOException;
 
 
+/**
+ * 2.x demo
+ */
 public class RxjavaTest {
 
 
+    /**
+     * 转阻塞
+     */
     @Test
     public void test() {
         Observable<LoginApiBean> observable = Observable.create(new ObservableOnSubscribe<LoginApiBean>() {
@@ -172,6 +178,51 @@ public class RxjavaTest {
         }
     }
 
+    @Test
+    public void testObservable2() {
+        Observable.create(new ObservableOnSubscribe<LoginApiBean>() {
+            @Override
+            public void subscribe(ObservableEmitter<LoginApiBean> e) throws Exception {
+                System.out.println(Thread.currentThread().getName() + " 用户登录");
+                e.onNext(login());
+            }
+        }) //调用登录接口
+                .map(new Function<LoginApiBean, UserInfoBean>() {
+
+                    @Override
+                    public UserInfoBean apply(LoginApiBean loginApiBean) {
+                        //处理登录结果，返回UserInfo
+                        if (loginApiBean.isSuccess()) {
+                            System.out.println(Thread.currentThread().getName() + "处理登录结果，返回UserInfo");
+                            return loginApiBean.getUserInfoBean();
+                        } else {
+                            throw new RequestFailException("获取网络请求失败");
+                        }
+                    }
+                })
+                .subscribe(new Consumer<UserInfoBean>() {
+                    @Override
+                    public void accept(UserInfoBean bean) throws Exception {
+                        //整个请求成功，根据获取的UserInfo更新对应的View
+                        System.out.println(Thread.currentThread().getName() + " 整个请求成功，根据获取的UserInfo更新对应的Vie");
+                        showSuccessView(bean);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //请求失败，显示对应的View
+                        throwable.printStackTrace();
+                    }
+                });
+
+
+        try {
+            System.out.println("主线程结束");
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 class LoginApiBean {

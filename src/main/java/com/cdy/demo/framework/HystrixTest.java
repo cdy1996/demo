@@ -73,6 +73,7 @@ public class HystrixTest {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             HystrixCommand<String> command1 = command.get();
             String result =command1.execute();
             System.out.println(result);
