@@ -1,67 +1,71 @@
 package com.cdy.demo.java.threadPool;
 
+import org.junit.Test;
+
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Created by viruser on 2018/7/6.
+ * 可重入锁测试
+ * Created by 陈东一
+ * 2019/3/13 0013 23:35
  */
 public class ReentrantLockTest {
-    static ReentrantLock lock = new ReentrantLock();
-    Integer a= 1;
-
-    static final Object read = new Object();
-    static final Object write = new Object();
-
-
-    public static void main(String[] args) {
-
-
-      /*  new Thread(()->{
-            try {
-                lock.tryLock();
-                System.out.println("thread拿到锁了");
-                TimeUnit.SECONDS.sleep(10);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-
-                lock.unlock();
-            }
-
-        }).start();
-*/
-
-
-        try {
+    
+    
+    @Test
+    public void testReenrantLock(){
+        ReentrantLock lock = new ReentrantLock();
+        Condition condition = lock.newCondition();
+        new Thread(()->{
             lock.lock();
-            System.out.println("main拿到锁了");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-            lock.unlock();
-        }
-
-
-    }
-
-
-    public  Integer read (){
-        synchronized (read) {
+            System.out.println("111");
             try {
-                wait();
+                condition.await();
             } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            return a;
-        }
+            lock.unlock();
+        }).start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("222");
+            condition.signal();
+            lock.unlock();
+        }).start();
+        
     }
-
-    public synchronized void write (){
-        synchronized (write) {
-            synchronized (read) {
-                a= 2;
-                notifyAll();
-            }
-        }
+    
+    @Test
+    public void testReenrantReadWriteLock(){
+        ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
+        ReentrantReadWriteLock.ReadLock lock = reentrantReadWriteLock.readLock();
+        ReentrantReadWriteLock.WriteLock writeLock = reentrantReadWriteLock.writeLock();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁1");
+            lock.unlock();
+        },"read1").start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁2");
+            lock.unlock();
+        },"read2").start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁3");
+            lock.unlock();
+        },"read3").start();
+        new Thread(()->{
+            lock.lock();
+            System.out.println("读锁4");
+            lock.unlock();
+        },"read4").start();
+        new Thread(()->{
+            writeLock.lock();
+            System.out.println("写锁");
+            writeLock.unlock();
+        },"write").start();
     }
 }

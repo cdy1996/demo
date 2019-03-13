@@ -1,4 +1,4 @@
-package com.cdy.demo.structure.myhashmap;
+package com.cdy.demo.repeatedWheels.myhashmap;
 
 /**
  * Created by 陈东一

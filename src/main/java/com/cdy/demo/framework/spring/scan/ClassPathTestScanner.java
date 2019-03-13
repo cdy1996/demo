@@ -32,7 +32,7 @@ public class ClassPathTestScanner extends ClassPathBeanDefinitionScanner {
     private void processBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry) {
         ScannedGenericBeanDefinition beanDefinition = (ScannedGenericBeanDefinition) definitionHolder.getBeanDefinition();
 
-        MultiValueMap<String, Object> allAnnotationAttributes = beanDefinition.getMetadata().getAllAnnotationAttributes(Test.class.getName());
+        MultiValueMap<String, Object> allAnnotationAttributes = beanDefinition.getMetadata().getAllAnnotationAttributes(Remoting.class.getName());
         ResourceLoader resourceLoader = getResourceLoader();
         String name = null,conextPath = null;
         if(resourceLoader instanceof ConfigurableApplicationContext)   {
@@ -50,19 +50,19 @@ public class ClassPathTestScanner extends ClassPathBeanDefinitionScanner {
         if (!StringUtils.hasText(configuration1)) {
             configuration1 = defaultConfiguratuion;
         }
-        TestDefine testDefine = new TestDefine(name, conextPath, configuration1);
+        RemoteDefine remoteDefine = new RemoteDefine(name, conextPath, configuration1);
 
         ConstructorArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
         constructorArgumentValues.addIndexedArgumentValue(0, beanDefinition.getBeanClassName());
-        constructorArgumentValues.addIndexedArgumentValue(1, testDefine);
-        beanDefinition.setBeanClass(TestFactoryBean.class);
+        constructorArgumentValues.addIndexedArgumentValue(1, remoteDefine);
+        beanDefinition.setBeanClass(RemoteFactoryBean.class);
         beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
 
     }
 
 
     public void registerFilters() {
-        super.addIncludeFilter(new AnnotationTypeFilter(Test.class));
+        super.addIncludeFilter(new AnnotationTypeFilter(Remoting.class));
     }
 
     @Override

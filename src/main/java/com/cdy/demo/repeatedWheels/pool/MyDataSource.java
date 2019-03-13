@@ -1,4 +1,4 @@
-package com.cdy.demo.structure.pool;
+package com.cdy.demo.repeatedWheels.pool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,7 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 自定义实现数据库
+ * 连接池 甲东南半
  * Created by 陈东一
  * 2018/3/4 20:39
  */

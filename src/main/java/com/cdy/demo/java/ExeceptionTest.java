@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * Created by viruser on 2018/7/9.
+ * futuretask 执行的异常捕获
  */
 public class ExeceptionTest {
 

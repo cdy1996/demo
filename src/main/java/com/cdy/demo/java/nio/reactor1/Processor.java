@@ -81,7 +81,7 @@ public class Processor implements Runnable {
                             System.out.println(name + "正在处理新请求");
                             SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                             ByteBuffer byteBuffer = ByteBuffer.allocate(1024);// 懒得定协议，就默认取这么多吧 = =
-                            socketChannel.read(byteBuffer);// TODO 划重点
+                            socketChannel.read(byteBuffer);
                             byteBuffer.flip();
                             requestChannel.sendRequest(new Request(selectionKey, byteBuffer));// 接受完数据后，把数据丢进队列
                             selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_READ);// 不再关注read
@@ -92,7 +92,7 @@ public class Processor implements Runnable {
                          */
                         if (selectionKey.isWritable()) {
                             System.out.println(name + "正在处理新应答");
-                            ByteBuffer send = inFlightRequest.get(selectionKey)// // TODO 划重点
+                            ByteBuffer send = inFlightRequest.get(selectionKey)
                                                              .poll();
                             SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                             socketChannel.write(send);

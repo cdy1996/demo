@@ -10,7 +10,7 @@ import static com.cdy.demo.structure.consistencyhash.NormalHashCluster.PRE_KEY;
 
 
 /**
- * todo 描述
+ * 一致性hash 没有许你几点
  * Created by 陈东一
  * 2018/11/4 0004 10:35
  */

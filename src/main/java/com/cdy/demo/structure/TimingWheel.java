@@ -1,6 +1,10 @@
 package com.cdy.demo.structure;
 
-public class TimingWheel<E> {
+
+/**
+ * todo 时间轮
+ */
+public class TimingWheel{
 
 
 }

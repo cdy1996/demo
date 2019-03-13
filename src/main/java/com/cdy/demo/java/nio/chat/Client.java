@@ -1,4 +1,4 @@
-package com.cdy.demo.java.nio.socket;
+package com.cdy.demo.java.nio.chat;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -1,4 +1,4 @@
-package com.cdy.demo.structure.pool;
+package com.cdy.demo.repeatedWheels.pool;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

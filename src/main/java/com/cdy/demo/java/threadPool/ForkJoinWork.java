@@ -1,5 +1,7 @@
 package com.cdy.demo.java.threadPool;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
@@ -45,7 +47,8 @@ public class ForkJoinWork extends RecursiveTask<Long> {
         }
     }
 
-    public static void main1(String[] args) throws InterruptedException, ExecutionException {
+    @Test
+    public void test() throws InterruptedException, ExecutionException {
 //        ForkJoinWork forkJoinWork = new ForkJoinWork(1L, 1000000L);
         long start = System.currentTimeMillis();
 //        Long compute = forkJoinWork.compute();

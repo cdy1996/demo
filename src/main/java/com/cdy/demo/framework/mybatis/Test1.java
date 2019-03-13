@@ -83,8 +83,4 @@ public class Test1 {
         log.info(user1.toString());
     }
     
-    
-    @Test
-    public void test3() {
-    }
 }

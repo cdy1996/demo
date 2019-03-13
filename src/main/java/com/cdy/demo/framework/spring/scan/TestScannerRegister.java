@@ -13,7 +13,7 @@ public class TestScannerRegister implements ImportBeanDefinitionRegistrar, Resou
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(Scan.class.getName()));
+        AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(RemoteScan.class.getName()));
         ClassPathTestScanner scanner = new ClassPathTestScanner(registry, annotationAttributes.getString("defaultConfiguration"));
 
         if (resourceLoader != null) {

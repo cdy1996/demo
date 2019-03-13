@@ -1,5 +1,8 @@
 package com.cdy.demo.structure;
 
+/**
+ * 二叉树
+ */
 public class TreeNode {
     public int order;
     public TreeNode left;

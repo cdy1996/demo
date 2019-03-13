@@ -17,11 +17,11 @@ public class TestProxy implements InvocationHandler {
     }
 
     private RestTemplate restTemplate;
-    private TestDefine testDefine;
+    private RemoteDefine remoteDefine;
 
-    public TestProxy(RestTemplate restTemplate, TestDefine testDefine) {
+    public TestProxy(RestTemplate restTemplate, RemoteDefine remoteDefine) {
         this.restTemplate = restTemplate;
-        this.testDefine = testDefine;
+        this.remoteDefine = remoteDefine;
     }
 
     @Override

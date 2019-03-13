@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
 
 /**
- * todo 描述
  * Created by 陈东一
  * 2019/1/8 0008 22:00
  */

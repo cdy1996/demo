@@ -1,13 +1,20 @@
 package com.cdy.demo.java;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Synchronization 在抢到锁后如果将锁对象修改 则会立刻失去锁
+ */
 public class SynchronizedTest implements Runnable{
 
     public Integer i = new Integer(0);
 
     public static CountDownLatch count = new CountDownLatch(2);
+    
+    
     @Override
     public void run() {
 
@@ -27,7 +34,8 @@ public class SynchronizedTest implements Runnable{
     }
 
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    @Test
+    public void main() throws IOException {
         SynchronizedTest syunchronizedTest = new SynchronizedTest();
 
         Thread thread = new Thread(syunchronizedTest);

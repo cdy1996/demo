@@ -1,6 +1,6 @@
 package com.cdy.demo.framework.spring.scan;
 
-public @interface Test {
+public @interface Remoting {
     //serviceid
     String name() default "123";
     //context-path

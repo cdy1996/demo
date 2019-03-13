@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * todo 描述
+ * 测试 jdk动态代理的 内部方法调用
  * Created by 陈东一
  * 2018/3/6 14:42
  */
@@ -14,11 +14,10 @@ public class JDKProxyTest {
     
     public static void main(String[] args) {
 //        System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+        
         Foo1 foo = new Foo2();
         InvocationHandlerImpl handler = new InvocationHandlerImpl(foo);
-//        Foo1 o = (Foo1)Proxy.newProxyInstance(foo.getClass().getClassLoader(), Foo1.class.getInterfaces(), handler);
-//        o.get();
-
+        
         Foo1 f = (Foo1) handler.newProxy(foo);
         f.get();
 

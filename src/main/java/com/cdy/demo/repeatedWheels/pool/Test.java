@@ -1,11 +1,10 @@
-package com.cdy.demo.structure.pool;
+package com.cdy.demo.repeatedWheels.pool;
 
 import java.sql.Connection;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * todo 描述
  * Created by 陈东一
  * 2018/3/4 20:54
  */

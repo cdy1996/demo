@@ -1,6 +1,7 @@
 package com.cdy.demo.java.threadPool;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
@@ -12,17 +13,15 @@ public class ConcurrentLinkedQueueTest {
     public static void main(String[] args) {
 
         ConcurrentLinkedQueue queue = new ConcurrentLinkedQueue();
-
-
         queue.add("1");
         queue.add("2");
         queue.add("3");
         queue.add("4");
-
-
-
-//        new DelayQueue<>()
-
+    
+        DelayQueue<Delayed> delayeds = new DelayQueue<>();
+    
+        delayeds.add(new Task());
+    
     }
 }
 

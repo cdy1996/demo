@@ -1,10 +1,10 @@
-package com.cdy.demo.structure.myhashmap;
+package com.cdy.demo.repeatedWheels.myhashmap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 手写hashmap
+ * hashmap 简单版
  * Created by 陈东一
  * 2018/2/27 14:37
  */

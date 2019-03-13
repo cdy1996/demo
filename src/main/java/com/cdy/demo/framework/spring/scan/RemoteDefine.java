@@ -1,6 +1,6 @@
 package com.cdy.demo.framework.spring.scan;
 
-public class TestDefine {
+public class RemoteDefine {
 
     //serivceid
     private String name;
@@ -9,7 +9,7 @@ public class TestDefine {
     //configuration beanname
     private String configuration;
 
-    public TestDefine(String name, String contextPath, String configuration) {
+    public RemoteDefine(String name, String contextPath, String configuration) {
         this.name = name;
         this.contextPath = contextPath;
         this.configuration = configuration;

@@ -3,7 +3,6 @@ package com.cdy.demo.gof23Design.visitor;
 import org.junit.Test;
 
 /**
- * todo 描述
  * Created by 陈东一
  * 2018/9/2 16:07
  */

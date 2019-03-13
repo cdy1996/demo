@@ -1,18 +1,24 @@
 package com.cdy.demo.java.threadPool;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
 /**
- * 阻塞队列
+ * 生产者消费者模型
  */
 public class BlockQueueTest {
     static BlockingQueue<String> queue = new SynchronousQueue<>();
 
     static volatile String s;
-
-    public static void main(String[] args) throws IOException {
+    
+    /**
+     * Synchronize 实现生产者消费者模型
+     */
+    @Test
+    public void testSynchronize() throws IOException {
         BlockQueueTest blockQueueTest = new BlockQueueTest();
         new Thread(() -> {
             while (true) {
@@ -73,7 +79,8 @@ public class BlockQueueTest {
         System.in.read();
     }
 
-    public void synchronizeQueue() throws IOException {
+    @Test
+    public void testBlockQueue() throws IOException {
         new Thread(() -> {
             while (true) {
                 try {
