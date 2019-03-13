@@ -1,4 +1,4 @@
-package com.cdy.demo.repeatedWheels.pool;
+package com.cdy.demo.repeatedWheels.myJdbcPool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
