@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
 
 @Slf4j
 public class Rxjava1Test {
@@ -117,9 +118,10 @@ public class Rxjava1Test {
                 });
         countDownLatch.await();
     }
-
+    static LongAdder longAdder = new LongAdder();
     @Test
     public void windowSlide() throws InterruptedException, IOException {
+
         long start = System.currentTimeMillis();
 
         final List<long[]> emptyEventCountsToStart = new ArrayList<>();
@@ -160,7 +162,8 @@ public class Rxjava1Test {
                 .flatMap(window ->
                         window.scan(new Metric(System.currentTimeMillis()-start), (a, e) -> {
 //                            System.out.println("scan"+Thread.currentThread().getName());
-                            return new Metric(a.success + e[0], a.fail + e[1], a.total + e[2],  e[3]);
+                            System.out.println(a.id);
+                            return new Metric(a.success + e[0], a.fail + e[1], a.total + e[2],  e[3], a.id);
                         }).skip(10)
                 ).onBackpressureDrop();
 
@@ -198,19 +201,23 @@ class Metric{
     long fail;
     long total;
     long end;
+    long id;
 
     public Metric(long end) {
         this.success = 0;
         this.fail = 0;
         this.total = 0;
+        Rxjava1Test.longAdder.increment();
+        this.id = Rxjava1Test.longAdder.longValue();
         this.end = System.currentTimeMillis();
     }
 
-    public Metric(long success, long fail, long total, long end) {
+    public Metric(long success, long fail, long total, long end, long id) {
         this.success = success;
         this.fail = fail;
         this.total = total;
         this.end = end;
+        this.id = id;
     }
 
 
@@ -221,6 +228,7 @@ class Metric{
                 ", fail=" + fail +
                 ", total=" + total +
                 ", end=" + end +
+                ", id=" + id +
                 '}';
     }
 }
