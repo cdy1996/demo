@@ -1,11 +1,11 @@
-package com.cdy.demo.framework;
+package com.cdy.demo.framework.guava;
 
 import com.google.common.util.concurrent.RateLimiter;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class GuavaTest {
+public class GuavaLimiter {
     
     
     /**
