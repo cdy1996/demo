@@ -1,6 +1,5 @@
 package com.cdy.demo.structure;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,10 +15,9 @@ public class LRUCache {
     ConcurrentHashMap<String, Cache> cache = new ConcurrentHashMap<>();
     ReentrantLock lock = new ReentrantLock();
 
-    List<String> writeQueue = new LinkedList<>();
-    List<String> readQueue = new LinkedList<>();
+//    Set<String> lruQueue = new LinkedHashSet<String>();
 
-//    Set queue = new TreeSet();
+    List<String> lruQueue = new LinkedList<>();
 
     int size = 1000;
 
@@ -49,7 +47,7 @@ public class LRUCache {
             } else {
                 result = value;
                 this.cache.put(key, cache);
-                writeQueue.add(key);
+                lruQueue.add(key);
             }
             if (this.cache.size() > size) {
                 release();
@@ -69,11 +67,11 @@ public class LRUCache {
                 //超时
                 if (o.timeout > System.currentTimeMillis()) {
                     this.cache.remove(key);
-                    readQueue.remove(key);
+                    lruQueue.remove(key);
                     result = null;
                 } else{
                     result = o.data;
-                    readQueue.add(key);
+                    lruQueue.add(key);
                 }
             } else {
                 result = null;
@@ -88,28 +86,33 @@ public class LRUCache {
 
     }
 
-    public void release(){
+    public void releaseTimeout(){
         long now = System.currentTimeMillis();
-        Iterator<String> iterator = writeQueue.iterator();
-        while(!iterator.hasNext()) {
-            String key = iterator.next();
+        lruQueue.removeIf(key->{
             Cache cache = this.cache.get(key);
             if (cache.timeout < now) {
                 this.cache.remove(key);
+                return true;
             }
-            iterator.remove();
-        }
-       iterator = readQueue.iterator();
-        while(!iterator.hasNext()) {
-            String key = iterator.next();
-            Cache cache = this.cache.get(key);
-            if (cache.timeout < now) {
-                this.cache.remove(key);
+            return false;
+        });
+    }
+
+    public void release(){
+        int size = 0;
+        long now = System.currentTimeMillis();
+        if ((size = this.cache.size()- size)>0) {
+            int i = lruQueue.size()-1;
+            while (size > 0) {
+                String key = lruQueue.get(i);
+                Cache cache = this.cache.get(key);
+                if (cache.timeout < now) {
+                    this.cache.remove(key);
+                }
+                i--;
+                size--;
             }
-            iterator.remove();
         }
-
-
     }
 
 
