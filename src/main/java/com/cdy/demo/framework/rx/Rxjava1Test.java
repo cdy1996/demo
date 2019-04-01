@@ -3,13 +3,18 @@ package com.cdy.demo.framework.rx;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func0;
+import rx.schedulers.Schedulers;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -18,8 +23,10 @@ public class Rxjava1Test {
 
 
     @Test
-    public void create() {
-        Observable.create(new Observable.OnSubscribe<String>() {
+    public void create() throws IOException {
+    
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Observable<String> stringObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 subscriber.onNext("item1");
@@ -27,15 +34,78 @@ public class Rxjava1Test {
                 subscriber.onNext("item3");
                 subscriber.onCompleted();
             }
-        })
-//                .map(e -> e + "")
-                .reduce((a,b)->a+b)
-                .subscribe(new Action1<String>() {
+        });
+    
+        Observable<Observable<String>> window = stringObservable.window(1000, TimeUnit.MILLISECONDS);
+    
+        Subscription subscribe = window.subscribe(new Subscriber<Observable<String>>() {
+            @Override
+            public void onCompleted() {
+                log.info("complete window");
+            }
+        
+            @Override
+            public void onError(Throwable e) {
+            
+            }
+        
+            @Override
+            public void onNext(Observable<String> stringObservable) {
+                stringObservable.subscribe(new Observer<String>() {
                     @Override
-                    public void call(String fruit) {
-                        log.info(fruit);
+                    public void onCompleted() {
+                        log.info("complete");
+                    }
+                
+                    @Override
+                    public void onError(Throwable e) {
+                    
+                    }
+                
+                    @Override
+                    public void onNext(String s) {
+                        log.info(s);
                     }
                 });
+            }
+        });
+        System.in.read();
+
+        
+        /*Observable<String> map = stringObservable.map(e -> {
+            System.out.println("map");
+            return e + "map";
+        });*/
+        
+//        Observable<String> reduce = map.reduce((a, b) -> a + b);
+        
+//                .subscribe(new Action1<String>() {
+//                    @Override
+//                    public void call(String fruit) {
+//                        log.info(fruit);
+//                    }
+//                });
+    
+//        Observable<String> scheduleObservable = map.subscribeOn(Schedulers.from(executorService));
+//        Observable<String> stringObservable1 = map.observeOn(Schedulers.from(executorService));
+       /*
+        Subscription end = map.subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("end");
+            }
+        
+            @Override
+            public void onError(Throwable throwable) {
+            
+            }
+        
+            @Override
+            public void onNext(String s) {
+                System.out.println(s);
+            }
+        });*/
+//        System.out.println(end);
     }
 
     @Test
