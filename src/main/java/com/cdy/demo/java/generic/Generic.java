@@ -2,6 +2,9 @@ package com.cdy.demo.java.generic;
 
 import java.lang.reflect.Array;
 
+/**
+ * 泛型数组测试
+ */
 public class Generic {
 
 
