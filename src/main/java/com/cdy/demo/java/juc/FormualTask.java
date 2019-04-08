@@ -1,4 +1,4 @@
-package com.cdy.demo.java.threadPool;
+package com.cdy.demo.java.juc;
 
 import java.util.ArrayList;
 import java.util.Arrays;

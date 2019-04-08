@@ -1,11 +1,9 @@
-package com.cdy.demo.java.threadPool;
+package com.cdy.demo.java.juc;
 
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 
 public class JUCTest {
     
@@ -56,18 +54,16 @@ public class JUCTest {
 
         System.in.read();
     }
-
     @Test
-    public void testCyclicBarrier() throws IOException {
-//        CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
-        CountDownLatch cyclicBarrier = new CountDownLatch(1);
+    public void testCountDownLatch() throws IOException {
+        CountDownLatch c = new CountDownLatch(1);
 
         new Thread(()->{
-                try {
-                    cyclicBarrier.await();
-                    System.out.println("同学1 开始做第一道题");
-                    Thread.sleep(1000L);
-                    System.out.println("同学1 做完第一道题");
+            try {
+                c.await();
+                System.out.println("同学1 开始做第一道题");
+                Thread.sleep(1000L);
+                System.out.println("同学1 做完第一道题");
                 /*  cyclicBarrier.await();
                     System.out.println("同学1 开始做第二道题");
                     Thread.sleep(2000L);
@@ -77,15 +73,15 @@ public class JUCTest {
                     Thread.sleep(1000L);
                     System.out.println("同学1 做完第三道题");*/
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }).start();
         new Thread(()->{
-                try {
-                    cyclicBarrier.await();
-                    System.out.println("同学2 开始做第一道题");
-                    Thread.sleep(2000L);
+            try {
+                c.await();
+                System.out.println("同学2 开始做第一道题");
+                Thread.sleep(2000L);
                     /*System.out.println("同学2 做完第一道题");
                     cyclicBarrier.await();
                     System.out.println("同学2 开始做第二道题");
@@ -96,14 +92,65 @@ public class JUCTest {
                     Thread.sleep(2000L);
                     System.out.println("同学2 做完第三道题");*/
 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        c.countDown();
+        c.countDown();
+        c.countDown();
+        System.in.read();
+
+    }
+
+    @Test
+    public void testCyclicBarrier() throws IOException {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
+
+        new Thread(()->{
+                try {
+                    cyclicBarrier.await();
+                    System.out.println("同学1 开始做第一道题");
+                    Thread.sleep(1000L);
+                    System.out.println("同学1 做完第一道题");
+                  cyclicBarrier.await();
+                    System.out.println("同学1 开始做第二道题");
+                    Thread.sleep(2000L);
+                    System.out.println("同学1 做完第二道题");
+                      cyclicBarrier.await();
+                    System.out.println("同学1 开始做第三道题");
+                    Thread.sleep(1000L);
+                    System.out.println("同学1 做完第三道题");
+
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+        }).start();
+        new Thread(()->{
+                try {
+                    cyclicBarrier.await();
+                    System.out.println("同学2 开始做第一道题");
+                    Thread.sleep(2000L);
+                    System.out.println("同学2 做完第一道题");
+                    cyclicBarrier.await();
+                    System.out.println("同学2 开始做第二道题");
+                    Thread.sleep(1000L);
+                    System.out.println("同学2 做完第二道题");
+                    cyclicBarrier.await();
+                    System.out.println("同学2 开始做第三道题");
+                    Thread.sleep(2000L);
+                    System.out.println("同学2 做完第三道题");
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
                     e.printStackTrace();
                 }
         }).start();
 
-        cyclicBarrier.countDown();
-        cyclicBarrier.countDown();
-        cyclicBarrier.countDown();
         System.in.read();
 
     }

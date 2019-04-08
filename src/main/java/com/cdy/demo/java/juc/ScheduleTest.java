@@ -1,4 +1,4 @@
-package com.cdy.demo.java.threadPool;
+package com.cdy.demo.java.juc;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

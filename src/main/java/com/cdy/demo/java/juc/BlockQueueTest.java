@@ -1,4 +1,4 @@
-package com.cdy.demo.java.threadPool;
+package com.cdy.demo.java.juc;
 
 import org.junit.Test;
 
