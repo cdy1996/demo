@@ -105,22 +105,23 @@ public class JUCTest {
     }
 
     @Test
-    public void testCyclicBarrier() throws IOException {
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
+    public void testCyclicBarrier() throws IOException, BrokenBarrierException, InterruptedException {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
 
         new Thread(()->{
                 try {
                     cyclicBarrier.await();
                     System.out.println("同学1 开始做第一道题");
-                    Thread.sleep(1000L);
+//                    Thread.sleep(1000L);
                     System.out.println("同学1 做完第一道题");
                   cyclicBarrier.await();
+                   
                     System.out.println("同学1 开始做第二道题");
-                    Thread.sleep(2000L);
+//                    Thread.sleep(2000L);
                     System.out.println("同学1 做完第二道题");
                       cyclicBarrier.await();
                     System.out.println("同学1 开始做第三道题");
-                    Thread.sleep(1000L);
+//                    Thread.sleep(1000L);
                     System.out.println("同学1 做完第三道题");
 
                 } catch (InterruptedException e) {
@@ -133,15 +134,15 @@ public class JUCTest {
                 try {
                     cyclicBarrier.await();
                     System.out.println("同学2 开始做第一道题");
-                    Thread.sleep(2000L);
+//                    Thread.sleep(2000L);
                     System.out.println("同学2 做完第一道题");
                     cyclicBarrier.await();
                     System.out.println("同学2 开始做第二道题");
-                    Thread.sleep(1000L);
+//                    Thread.sleep(1000L);
                     System.out.println("同学2 做完第二道题");
                     cyclicBarrier.await();
                     System.out.println("同学2 开始做第三道题");
-                    Thread.sleep(2000L);
+//                    Thread.sleep(2000L);
                     System.out.println("同学2 做完第三道题");
 
                 } catch (InterruptedException e) {
@@ -150,7 +151,10 @@ public class JUCTest {
                     e.printStackTrace();
                 }
         }).start();
-
+    
+        cyclicBarrier.await();
+        cyclicBarrier.await();
+        cyclicBarrier.await();
         System.in.read();
 
     }

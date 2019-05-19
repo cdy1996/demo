@@ -1,4 +1,4 @@
-package com.cdy.demo.gof23Design.status;
+package com.cdy.demo.framework.spring.status;
 
 public enum Events {
     PAY,        // 支付

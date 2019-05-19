@@ -51,7 +51,8 @@ public class EchoServer {
             //异步绑定到服务器，阻塞等待绑定完成
             ChannelFuture f = b.bind().sync();
             //获取channel的closefuture，并阻塞当前线程知道它完成
-            f.channel().closeFuture().sync();
+//            f.channel().closeFuture();
+            f.syncUninterruptibly();
 
         }finally {
             Future<?> sync = boss.shutdownGracefully().sync();
