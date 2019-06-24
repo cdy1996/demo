@@ -1,10 +1,10 @@
 package com.cdy.demo.java.juc;
 
-import org.junit.Test;
-
 import java.io.IOException;
-import java.util.concurrent.*;
-import java.util.stream.IntStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by viruser on 2018/6/1.
@@ -47,16 +47,14 @@ public class ForkJoinWork extends RecursiveTask<Long> {
         }
     }
 
-    @Test
-    public void test() throws InterruptedException, ExecutionException {
+    public static  void test() throws InterruptedException, ExecutionException, IOException {
 //        ForkJoinWork forkJoinWork = new ForkJoinWork(1L, 1000000L);
         long start = System.currentTimeMillis();
 //        Long compute = forkJoinWork.compute();
 
-//        ForkJoinPool forkJoinPool1 = ForkJoinPool.commonPool();
+        ForkJoinPool forkJoinPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
 
-        // 创建包含Runtime.getRuntime().availableProcessors()返回值作为个数的并行线程的ForkJoinPool    
-        ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+//        ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
         // 提交可分解的PrintTask任务
 //        ForkJoinTask<Long> submit = forkJoinPool.submit(new ForkJoinWork(4));
 //        Long aLong = submit.get();
@@ -68,17 +66,19 @@ public class ForkJoinWork extends RecursiveTask<Long> {
 //        forkJoinPool.awaitTermination(2, TimeUnit.SECONDS);//阻塞当前线程直到 ForkJoinPool 中所有的任务都执行结束
         // 关闭线程池
         System.out.println(System.currentTimeMillis()-start +"==>"+invoke);
-        forkJoinPool.shutdown();
-
+        System.in.read();
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 //        ForkJoinPool executorService = (ForkJoinPool) Executors.newWorkStealingPool(10);
 
 //        executorService.submit(()->
-                IntStream.range(1, 1000).parallel().forEach(e -> System.out.println(e + "->" + Thread.currentThread().getName()));
+//                IntStream.range(1, 1000).parallel().forEach(e -> System.out.println(e + "->" + Thread.currentThread().getName()));
 //        );
+
+        test();
+
 
         System.in.read();
     }
