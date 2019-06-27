@@ -2,6 +2,9 @@ package com.cdy.demo.java.tailRecursion;
 
 import java.util.function.Function;
 
+/**
+ * https://www.cnblogs.com/invoker-/p/7723420.html
+ */
 public class TailTest {
 
     /**
