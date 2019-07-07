@@ -1,4 +1,4 @@
-package com.cdy.demo;
+package com.cdy.demo.algorithm;
 
 /**
  * ip整数和ip字符串互转工具类

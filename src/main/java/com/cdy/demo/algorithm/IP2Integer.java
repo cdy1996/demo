@@ -1,4 +1,4 @@
-package com.cdy.demo;
+package com.cdy.demo.algorithm;
 
 public class IP2Integer {
  

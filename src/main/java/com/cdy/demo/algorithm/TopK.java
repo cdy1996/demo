@@ -1,4 +1,4 @@
-package com.cdy.demo;
+package com.cdy.demo.algorithm;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;
