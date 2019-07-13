@@ -5,7 +5,7 @@ import com.cdy.demo.repeatedWheels.myaop.advice.AroundAdvice;
 import com.cdy.demo.repeatedWheels.myaop.advice.BeforeAdvice;
 import com.cdy.demo.repeatedWheels.myaop.advisor.DefaultAdvisor;
 import com.cdy.demo.repeatedWheels.myaop.pointcut.ClassPointCut;
-import com.cdy.demo.repeatedWheels.myaop.proxy.CglibProxyFactory;
+import com.cdy.demo.repeatedWheels.myaop.proxy.JavassistProxyFactory;
 import com.cdy.demo.repeatedWheels.myaop.proxy.ProxyFactory;
 
 import java.lang.reflect.Method;
@@ -50,7 +50,9 @@ public class MainTest {
             }
         });
     
-        ProxyFactory proxyFactory = new CglibProxyFactory();
+        ProxyFactory proxyFactory = new JavassistProxyFactory();
+//        ProxyFactory proxyFactory = new JDKProxyFactory();
+//        ProxyFactory proxyFactory = new CglibProxyFactory();
     
         Sleep sleep1 = proxyFactory.generateProxy(sleep, advisor);
     
