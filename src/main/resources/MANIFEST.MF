@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
+Premain-Class: com.cdy.demo.java.agent.PreMainTraceAgent
+Agent-Class: com.cdy.demo.java.agent.AgentMainTraceAgent
+Main-Class: com.cdy.demo.java.agent.AccountMain
+Can-Retransform-Classes: true

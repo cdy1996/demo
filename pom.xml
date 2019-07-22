@@ -212,6 +212,11 @@
             <artifactId>reactor-netty</artifactId>
             <version>0.8.5.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>1.33</version>
+        </dependency>
 
 
     </dependencies>
