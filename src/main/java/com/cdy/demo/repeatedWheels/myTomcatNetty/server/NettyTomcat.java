@@ -1,4 +1,4 @@
-package com.cdy.demo.repeatedWheels.myTomcat.netty.server;
+package com.cdy.demo.repeatedWheels.myTomcatNetty.server;
 
 import org.apache.log4j.Logger;
 

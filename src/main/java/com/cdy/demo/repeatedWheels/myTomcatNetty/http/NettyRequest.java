@@ -1,4 +1,4 @@
-package com.cdy.demo.repeatedWheels.myTomcat.netty.http;
+package com.cdy.demo.repeatedWheels.myTomcatNetty.http;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.QueryStringDecoder;

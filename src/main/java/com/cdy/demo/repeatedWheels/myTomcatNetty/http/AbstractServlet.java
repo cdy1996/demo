@@ -1,4 +1,4 @@
-package com.cdy.demo.repeatedWheels.myTomcat.netty.http;
+package com.cdy.demo.repeatedWheels.myTomcatNetty.http;
 
 public abstract class AbstractServlet {
 	

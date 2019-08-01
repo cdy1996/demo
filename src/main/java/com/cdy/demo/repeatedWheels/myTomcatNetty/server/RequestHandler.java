@@ -1,9 +1,9 @@
-package com.cdy.demo.repeatedWheels.myTomcat.netty.server;
+package com.cdy.demo.repeatedWheels.myTomcatNetty.server;
 
-import com.cdy.demo.repeatedWheels.myTomcat.netty.CustomConfig;
-import com.cdy.demo.repeatedWheels.myTomcat.netty.http.NettyRequest;
-import com.cdy.demo.repeatedWheels.myTomcat.netty.http.NettyResponse;
-import com.cdy.demo.repeatedWheels.myTomcat.netty.http.AbstractServlet;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.CustomConfig;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.NettyRequest;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.NettyResponse;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.AbstractServlet;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.log4j.Logger;
