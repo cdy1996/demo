@@ -77,7 +77,7 @@ public class Test1 {
     
     @Test
     public void test2() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:com/cdy/demo/framework/spring/applicationContext.xml");
         User1Dao user1Dao = (User1Dao) context.getBean("user1Dao");
         User1 user1 = user1Dao.selectOne(1);
         log.info(user1.toString());
