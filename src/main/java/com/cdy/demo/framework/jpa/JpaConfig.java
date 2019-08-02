@@ -39,7 +39,8 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class JpaConfig {
 
-
+    //https://www.cnblogs.com/qqvvn/p/9503385.html
+    //https://www.jianshu.com/p/c185188fa7c8%20
     public void testH2() throws Exception {
         Class.forName("org.h2.Driver");
         Connection sa = DriverManager.getConnection("jdbc:h2:mem:h2db", "sa", "");
@@ -53,6 +54,7 @@ public class JpaConfig {
         }
     }
 
+    //https://www.cnblogs.com/cxyzyh2017/p/6673089.html
     public static void main(String[] args) {
 
 
