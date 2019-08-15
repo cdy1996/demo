@@ -108,6 +108,13 @@
                 <scope>system</scope>
                 <systemPath>${basedir}/lib/netty-all-4.1.25.Final.jar</systemPath>-->
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.agrona/agrona -->
+        <dependency>
+            <groupId>org.agrona</groupId>
+            <artifactId>agrona</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
 
 
         <dependency>
