@@ -24,8 +24,8 @@ public class RpcClient {
     }
 
     public void greet(String name) {
-        HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-        HelloReply response = blockingStub.sayHello(request);
+        HelloWorldProto.HelloRequest request = HelloWorldProto.HelloRequest.newBuilder().setName(name).build();
+        HelloWorldProto.HelloReply response = blockingStub.sayHello(request);
         System.out.println(response.getMessage());
 
     }

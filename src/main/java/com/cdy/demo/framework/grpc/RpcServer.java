@@ -56,9 +56,9 @@ public class RpcServer {
     private class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
 
-        public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
+        public void sayHello(HelloWorldProto.HelloRequest req, StreamObserver<HelloWorldProto.HelloReply> responseObserver) {
             System.out.println("service:"+req.getName());
-            HelloReply reply = HelloReply.newBuilder().setMessage(("Hello: " + req.getName())).build();
+            HelloWorldProto.HelloReply reply = HelloWorldProto.HelloReply.newBuilder().setMessage(("Hello: " + req.getName())).build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }

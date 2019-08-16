@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+//package com.mattie.netty.grpc;
+
+option java_package = "com.cdy.demo.framework.grpc";
+option java_outer_classname = "HelloWorldProtos";
+
+service HelloService {
+    //双向流
+    rpc biStream (stream HelloStreamRequest) returns (stream HelloStreamResponse) {};
+}
+
+//双向流
+message HelloStreamRequest {
+    string req_info = 1;
+}
+
+message HelloStreamResponse {
+    string resp_info = 1;
+}
