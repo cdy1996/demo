@@ -18,8 +18,8 @@ import java.nio.file.Paths;
  */
 public class MappedFileTest {
     
-    Path path = Paths.get("D:\\workspace\\ideaworkspace\\练手项目\\springstudy\\src\\test\\resource\\abc.txt");
-    Path outPath = Paths.get("D:\\workspace\\ideaworkspace\\练手项目\\springstudy\\src\\test\\resource\\ccc.txt");
+    Path path = Paths.get("abc.txt");
+    Path outPath = Paths.get("ccc.txt");
     
     String s = "aaaaaaaaaaaaaaaaaaaaaaaaa";
     @Test

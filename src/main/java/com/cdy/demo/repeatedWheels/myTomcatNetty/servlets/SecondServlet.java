@@ -1,9 +1,9 @@
-package com.cdy.demo.repeatedWheels.myTomcat.netty.servlets;
+package com.cdy.demo.repeatedWheels.myTomcatNetty.servlets;
 
 import com.alibaba.fastjson.JSON;
-import com.cdy.demo.repeatedWheels.myTomcat.netty.http.NettyRequest;
-import com.cdy.demo.repeatedWheels.myTomcat.netty.http.NettyResponse;
-import com.cdy.demo.repeatedWheels.myTomcat.netty.http.AbstractServlet;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.NettyRequest;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.NettyResponse;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.AbstractServlet;
 
 public class SecondServlet extends AbstractServlet {
 
