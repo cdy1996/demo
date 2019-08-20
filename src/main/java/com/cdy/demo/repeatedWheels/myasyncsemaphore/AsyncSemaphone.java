@@ -15,7 +15,7 @@ public class AsyncSemaphone implements Runnable {
     }
 
     public AsyncSemaphone(int num, int queueNum) {
-        this(num, queueNum, 5);
+        this(num, queueNum, queueNum);
     }
 
     public AsyncSemaphone(int num, int queueNum, int threadNum) {
