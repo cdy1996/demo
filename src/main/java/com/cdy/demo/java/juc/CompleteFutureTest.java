@@ -42,10 +42,10 @@ public class CompleteFutureTest {
             System.out.println(Thread.currentThread().getName() + r + " -2");
             return "222";
         });
-//        CompletableFuture<String> third = origin.thenApplyAsync(r -> {
-//            System.out.println(Thread.currentThread().getName() + r + " -3");
-//            return "111";
-//        });
+        CompletableFuture<String> third = origin.thenApplyAsync(r -> {
+            System.out.println(Thread.currentThread().getName() + r + " -3");
+            return "111";
+        });
 
 
         // origin -> second 这种时顺序输出的
