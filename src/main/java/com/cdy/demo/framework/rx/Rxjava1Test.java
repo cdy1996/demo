@@ -8,7 +8,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func0;
-import rx.schedulers.Schedulers;
 
 import java.io.IOException;
 import java.util.*;
@@ -227,7 +226,7 @@ public class Rxjava1Test {
                 ).startWith(emptyEventCountsToStart);
 
 
-
+        // skip 1 是滑动的关键
         Observable<Metric> metricObservable = observable.window(10, 1)
                 .flatMap(window ->
                         window.scan(new Metric(System.currentTimeMillis()-start), (a, e) -> {

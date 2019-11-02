@@ -1,19 +1,74 @@
 package com.cdy.demo.java.juc;
 
+import io.netty.util.concurrent.CompleteFuture;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class CompleteFutureTest {
-    
-    
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Future<Double> priceAsync = getPriceAsync("!23");
-        System.out.println(priceAsync.get());
-        
+
+
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+//        Future<Double> priceAsync = getPriceAsync("!23");
+//        System.out.println(priceAsync.get());
+
+        testMultiFuture();
+
+        System.in.read();
+    }
+
+    public static void testMultiFuture(){
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        CompletableFuture<String> origin = CompletableFuture.supplyAsync(() -> {
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "111";
+        });
+
+
+
+        CompletableFuture<String> first = origin.whenComplete((r, e) -> {
+            System.out.println(Thread.currentThread().getName() + r + " -1");
+        });
+        CompletableFuture<String> second = origin.thenApply((r) -> {
+            System.out.println(Thread.currentThread().getName() + r + " -2");
+            return "222";
+        });
+        CompletableFuture<String> third = origin.thenApplyAsync(r -> {
+            System.out.println(Thread.currentThread().getName() + r + " -3");
+            return "111";
+        });
+
+
+        // origin -> second 这种时顺序输出的
+        first.whenComplete((r, e) -> {
+            System.out.println(Thread.currentThread().getName()+r + " -11");
+        });
+
+
+        CompletableFuture<String> ten = second.whenComplete((r, e) -> {
+            System.out.println(Thread.currentThread().getName() + r + " -22");
+        });
+        second.whenComplete((r, e) -> {
+            System.out.println(Thread.currentThread().getName()+r + " -222");
+        });
+//        third.whenComplete((r, e) -> {
+//            System.out.println(Thread.currentThread().getName() + r + " -33");
+//        });
+
+        ten.whenComplete((r, e) -> {
+            System.out.println(Thread.currentThread().getName() + r + " -1010");
+        });
+
+        countDownLatch.countDown();
     }
     
     public static Future<Double> getPriceAsync(String product) {
