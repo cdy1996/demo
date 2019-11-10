@@ -4,16 +4,13 @@ import io.netty.util.concurrent.CompleteFuture;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class CompleteFutureTest {
 
 
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException, TimeoutException {
 //        Future<Double> priceAsync = getPriceAsync("!23");
 //        System.out.println(priceAsync.get());
 
@@ -22,7 +19,7 @@ public class CompleteFutureTest {
         System.in.read();
     }
 
-    public static void testMultiFuture(){
+    public static void testMultiFuture() throws InterruptedException, ExecutionException, TimeoutException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         CompletableFuture<String> origin = CompletableFuture.supplyAsync(() -> {
             try {
@@ -68,6 +65,7 @@ public class CompleteFutureTest {
             System.out.println(Thread.currentThread().getName() + r + " -1010");
         });
 
+        ten.get(100, TimeUnit.SECONDS);
         countDownLatch.countDown();
     }
     
