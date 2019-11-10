@@ -1,5 +1,6 @@
 package com.cdy.demo.java;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 
 /**
@@ -9,13 +10,14 @@ import java.lang.reflect.Field;
  */
 public class IntegerTest {
     
-    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-        Integer a = 1, b = 2;
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException, UnsupportedEncodingException {
+      /*  Integer a = 1, b = 2;
         swap2(a, b);
         System.out.println(a + " " + b);
         Integer c = 1;
-        System.out.println(a == c);
-
+        System.out.println(a == c);*/
+        
+        
     }
     
     private static void swap(Integer a, Integer b) throws NoSuchFieldException, IllegalAccessException {
@@ -30,7 +32,7 @@ public class IntegerTest {
         
         
     }
-
+    
     private static void swap2(Integer a, Integer b) throws NoSuchFieldException, IllegalAccessException {
         Field value = Integer.class.getDeclaredField("value");
         value.setAccessible(true);
@@ -44,5 +46,5 @@ public class IntegerTest {
         
     }
     
-  
+    
 }
