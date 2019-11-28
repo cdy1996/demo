@@ -10,6 +10,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class JdbcCommonPool {
 
@@ -23,6 +24,20 @@ public class JdbcCommonPool {
         @Override
         public Connection create() throws Exception {
             return DriverManager.getConnection(url, username, password);
+        }
+
+        @Override
+        public void destroyObject(PooledObject<Connection> p) throws Exception {
+            p.getObject().close();
+        }
+
+        @Override
+        public boolean validateObject(PooledObject<Connection> p) {
+            try {
+                return p.getObject().isValid(3000);
+            } catch (SQLException e) {
+                return false;
+            }
         }
 
         @Override

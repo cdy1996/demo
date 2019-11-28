@@ -25,10 +25,21 @@ public class RedisCommonPool {
         @Override
         public Jedis create() throws Exception {
             Jedis jedis = new Jedis(host, Integer.parseInt(port), Integer.parseInt(timeout==null?"3000":timeout));
+            jedis.connect();
             if (auth != null) {
                 jedis.auth(auth);
             }
             return jedis;
+        }
+
+        @Override
+        public boolean validateObject(PooledObject<Jedis> p) {
+            return p.getObject().ping().equals("PONG");
+        }
+
+        @Override
+        public void destroyObject(PooledObject<Jedis> p) throws Exception {
+            p.getObject().quit();
         }
 
         @Override

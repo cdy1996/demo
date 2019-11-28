@@ -24,6 +24,16 @@ public class ThreadCommonPool {
         }
 
         @Override
+        public void destroyObject(PooledObject<Thread> p) throws Exception {
+            p.getObject().interrupt();
+        }
+
+        @Override
+        public boolean validateObject(PooledObject<Thread> p) {
+            return p.getObject().isAlive();
+        }
+
+        @Override
         public PooledObject<Thread> wrap(Thread conn) {
             //包装实际对象
             return new DefaultPooledObject<>(conn);
