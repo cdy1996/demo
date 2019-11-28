@@ -34,7 +34,8 @@ public class JedisClusterTest {
 //        jedisPoolConfig.setMaxWaitMillis(2000); // 设置2秒
         //对拿到的connection进行validateObject校验
 //        jedisPoolConfig.setTestOnBorrow(true);
-        jedis = new JedisCluster(hostAndPortsSet, jedisPoolConfig);
+        jedis = new JedisCluster(hostAndPortsSet, 3000, 3000, 3, "", jedisPoolConfig);
+        
         jedis.set("Jedis", "Hello Work!");
         System.out.println(jedis.get("Jedis"));
     }

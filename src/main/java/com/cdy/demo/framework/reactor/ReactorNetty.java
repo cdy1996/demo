@@ -1,6 +1,9 @@
 package com.cdy.demo.framework.reactor;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import reactor.netty.http.server.HttpServer;
+import reactor.netty.tcp.TcpServer;
 
 import java.io.IOException;
 
@@ -13,6 +16,20 @@ public class ReactorNetty {
     
     
     public static void main(String[] args) throws IOException {
+    
+        TcpServer.create()
+                .bootstrap(e->e.childHandler(new ChannelInboundHandlerAdapter(){
+                    @Override
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                        super.channelRead(ctx, msg);
+                    }
+                }))
+            
+                .host("127.0.0.1")
+                .port(1234)
+                .bind()
+                .block();
+        
          HttpServer.create()
                 .host("127.0.0.1")
                 .port(8080)
