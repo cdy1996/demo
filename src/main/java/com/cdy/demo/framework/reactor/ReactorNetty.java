@@ -1,8 +1,9 @@
 package com.cdy.demo.framework.reactor;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import reactor.core.publisher.Mono;
+import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
+import reactor.netty.resources.LoopResources;
 import reactor.netty.tcp.TcpServer;
 
 import java.io.IOException;
@@ -16,43 +17,40 @@ public class ReactorNetty {
     
     
     public static void main(String[] args) throws IOException {
-    
-        TcpServer.create()
-                .bootstrap(e->e.childHandler(new ChannelInboundHandlerAdapter(){
-                    @Override
-                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                        super.channelRead(ctx, msg);
-                    }
-                }))
-            
-                .host("127.0.0.1")
-                .port(1234)
-                .bind()
-                .block();
-        
-         HttpServer.create()
-                .host("127.0.0.1")
-                .port(8080)
-                .route(r->
-                        r.get("/a", (request, response)->{
-                            System.out.println("ddd");
-                    return response.sendString(request.receive()
-                            .asString()
-                            .map(it -> {
-                                System.out.println(request.param("param"));
-                                return it + ' ' + request.param("param") + '!';
-                            })
-                            .doOnEach(System.out::println));
-                }))
-//                .handle((request, response)-> response.sendString(request.receive()
-//                        .asString()
-//                        .log("all")
-//                        .map(it -> it + ' ' + request.param("param") + '!')
-//                        .log("all")))
-                .bindNow();
 
-         System.in.read();
-        
-        
+//        http();
+        LoopResources loop = LoopResources.create("event-loop", 1, 4, true);
+        DisposableServer server =
+                TcpServer.create()
+//                        .doOnConnection(conn->conn.addHandler())
+                        .handle((inbound, outbound) -> inbound.receive().then())
+                        .bindNow();
+
+
+        System.in.read();
+        server.onDispose()
+                .block();
+
+
+    }
+
+    private static void http() throws IOException {
+        DisposableServer server =
+                HttpServer.create()
+                        .port(8080)
+                        .route(routes ->
+                                routes.get("/hello",
+                                        (request, response) -> response.sendString(Mono.just("Hello World!")))
+                                        .post("/echo",
+                                                (request, response) -> response.send(request.receive().retain()))
+                                        .get("/path/{param}",
+                                                (request, response) -> response.sendString(Mono.just(request.param("param"))))
+                                        .ws("/ws",
+                                                (wsInbound, wsOutbound) -> wsOutbound.send(wsInbound.receive().retain())))
+                        .bindNow();
+        System.in.read();
+
+        server.onDispose()
+                .block();
     }
 }
