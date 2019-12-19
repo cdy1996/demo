@@ -1,6 +1,7 @@
 package com.cdy.demo.framework.reactor;
 
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 /**
  * todo
@@ -11,13 +12,22 @@ public class ReactorDemo {
     
     
     public static void main(String[] args) {
-    
-        Flux.just("0", "1", "3")
-                .map(e->e+",")
-                .map(e->e+"()")
-                .subscribe(e->{
-                    System.out.println(e);
-                });
+
+        String key = "message";
+        Mono<String> r =
+                Mono.just("Hello")
+                        .flatMap( s -> Mono.subscriberContext()
+                                .map( ctx -> s + " " + ctx.get(key))
+                        )
+                        .flatMap( s -> Mono.subscriberContext()
+                                .map( ctx -> s + " " + ctx.get(key))
+                                .subscriberContext(ctx -> ctx.put(key, "Reactor"))
+                        )
+                        .subscriberContext(ctx -> ctx.put(key, "World"));
+
+        StepVerifier.create(r)
+                .expectNext("Hello World Reactor")
+                .verifyComplete();
         
     }
     
