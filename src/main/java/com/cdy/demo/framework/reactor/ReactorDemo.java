@@ -1,6 +1,7 @@
 package com.cdy.demo.framework.reactor;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 /**
@@ -17,10 +18,17 @@ public class ReactorDemo {
         Mono<String> r =
                 Mono.just("Hello")
                         .flatMap( s -> Mono.subscriberContext()
-                                .map( ctx -> s + " " + ctx.get(key))
+                                .map( ctx -> {
+                                    System.out.println(Thread.currentThread().getName() +  ctx.get(key));
+                                    return s + " " + ctx.get(key);
+                                })
                         )
+                        .publishOn(Schedulers.elastic())
                         .flatMap( s -> Mono.subscriberContext()
-                                .map( ctx -> s + " " + ctx.get(key))
+                                .map( ctx -> {
+                                    System.out.println(Thread.currentThread().getName()+  ctx.get(key));
+                                    return s + " " + ctx.get(key);
+                                })
                                 .subscriberContext(ctx -> ctx.put(key, "Reactor"))
                         )
                         .subscriberContext(ctx -> ctx.put(key, "World"));
