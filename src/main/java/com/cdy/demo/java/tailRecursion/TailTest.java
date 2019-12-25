@@ -3,7 +3,10 @@ package com.cdy.demo.java.tailRecursion;
 import java.util.function.Function;
 
 /**
+ * 尾递归  解决递归问题
  * https://www.cnblogs.com/invoker-/p/7723420.html
+ * 备忘录模式 解决递归问题
+ * https://www.cnblogs.com/invoker-/p/7728452.html
  */
 public class TailTest {
 
@@ -50,7 +53,7 @@ public class TailTest {
 
 
     public static void main(String[] args) {
-        System.out.println(factorialRecursion(100_000));
+//        System.out.println(factorialRecursion(100_000));
         System.out.println(factorial(100_000));
 
 

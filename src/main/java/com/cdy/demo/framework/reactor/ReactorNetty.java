@@ -38,6 +38,9 @@ public class ReactorNetty {
         DisposableServer server =
                 HttpServer.create()
                         .port(8080)
+//                        .handle((httpServerRequest, httpServerResponse) -> {
+//
+//                        })
                         .route(routes ->
                                 routes.get("/hello",
                                         (request, response) -> response.sendString(Mono.just("Hello World!")))
