@@ -1,7 +1,11 @@
 package com.cdy.demo.framework.reactor;
 
 import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.time.Duration;
 
 /**
  * todo
@@ -9,9 +13,9 @@ import reactor.core.publisher.Mono;
  * 2019/9/22 0022 14:39
  */
 public class ReactorDemo {
-
-
-    public static void main(String[] args) {
+    
+    
+    private static void testContext() {
         String key = "message";
 //        Mono.from()
         Mono<String> stringMono = Mono.just("Hello")
@@ -35,18 +39,24 @@ public class ReactorDemo {
 //        StepVerifier.create(r)
 //                .expectNext("Hello World Reactor")
 //                .verifyComplete();
-
     }
-
-
-    public static void main1(String[] args) {
-        Mono.just("Hello")
-                .map(s -> {
-                    return Mono.just(s + s);
-                })
-                .subscribe(e -> {
-                    e.subscribe(ee -> System.out.println(ee));
-                });
+    
+    
+    public static void main(String[] args) throws IOException {
+//        testContext();
+        
+        testJoin();
     }
-
+    
+    private static void testJoin() throws IOException {
+        Flux<Integer> just = Flux.just(1, 2, 3);
+        Flux<Integer> just1 = Flux.just(4, 5, 6);
+        just.join(just1,
+                x -> Mono.just(x).delay(Duration.ofMillis(0)), //错误用法
+                y -> Mono.just(y),
+                (x, y) -> x.toString() + "-" + y.toString()
+        ).subscribe(x -> System.out.println("onNext: " + x));
+        System.in.read();
+    }
+    
 }
