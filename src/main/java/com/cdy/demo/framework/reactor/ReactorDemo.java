@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.Duration;
+import java.util.concurrent.Callable;
 
 /**
  * todo
@@ -13,8 +13,8 @@ import java.time.Duration;
  * 2019/9/22 0022 14:39
  */
 public class ReactorDemo {
-    
-    
+
+
     private static void testContext() {
         String key = "message";
 //        Mono.from()
@@ -40,23 +40,71 @@ public class ReactorDemo {
 //                .expectNext("Hello World Reactor")
 //                .verifyComplete();
     }
-    
-    
+
+
     public static void main(String[] args) throws IOException {
 //        testContext();
-        
-        testJoin();
+
+//        testJoin();
+
+        testUsing();
     }
-    
+
     private static void testJoin() throws IOException {
         Flux<Integer> just = Flux.just(1, 2, 3);
-        Flux<Integer> just1 = Flux.just(4, 5, 6);
-        just.join(just1,
-                x -> Mono.just(x).delay(Duration.ofMillis(0)), //错误用法
-                y -> Mono.just(y),
-                (x, y) -> x.toString() + "-" + y.toString()
-        ).subscribe(x -> System.out.println("onNext: " + x));
+//        Flux<Integer> just1 = Flux.just(4, 5, 6);
+//        just.join(just1,
+//                x -> Mono.just(x).delay(Duration.ofMillis(0)), //错误用法
+//                y -> Mono.just(y),
+//                (x, y) -> x.toString() + "-" + y.toString()
+//        ).subscribe(x -> System.out.println("onNext: " + x));
+        just.subscribe(x -> System.out.println("onNext: " + x));
+        just.subscribe(x -> System.out.println("onNext: " + x));
         System.in.read();
     }
-    
+
+
+    // using 提供可关闭的资源, usingwhen只取第一个, mono和flux的差异在于第二个参数
+    public static void testUsing() {
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<String> callable = () -> {
+            System.out.println("callable");
+            return "1";
+        };
+        Mono<String> using = Mono.using(callable, c -> Mono.just(c), c -> {
+        });
+
+//        using.subscribe(System.out::println);
+//        using.subscribe(System.out::println);
+//        Mono.usingWhen(Flux.just(1, 2, 3),
+//                e -> Mono.just(e),
+//                e -> Mono.just(e),
+//                e -> Mono.just(e))
+//                .subscribe(e -> System.out.println(e));
+//        Flux.usingWhen(Flux.just(1, 2, 3),
+//                e -> Flux.just(e, e),
+//                e -> Mono.just(e),
+//                e -> Mono.just(e))
+//                .subscribe(e -> System.out.println(e));
+
+
+        // 有点像信号量
+        // wheninner 吃掉了所有的onNext , 这是个没有结果的初始操作
+//        Mono.when(Flux.just(1).doOnNext(e-> System.out.println(e)),
+//                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
+//                .subscribe(e -> System.out.println(e));
+//        Mono.whenDelayError(Flux.just(1).doOnNext(e-> System.out.println(e)),
+//                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
+//                .subscribe(e -> System.out.println(e));
+
+        Mono.when(Flux.just(1).doOnNext(e-> {throw new RuntimeException(e+"");}),
+                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
+                .subscribe(e -> System.out.println(e),e-> System.out.println(e.getMessage()));
+        System.out.println();
+        Mono.whenDelayError(Flux.just(1).doOnNext(e-> {throw new RuntimeException(e+"");}),
+                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
+                .subscribe(e -> System.out.println(e),e-> System.out.println(e.getMessage()));
+
+    }
+
 }
