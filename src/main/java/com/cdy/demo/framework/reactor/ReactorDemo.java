@@ -3,6 +3,7 @@ package com.cdy.demo.framework.reactor;
 import org.junit.After;
 import org.junit.Test;
 import reactor.core.Disposable;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -92,15 +93,14 @@ public class ReactorDemo {
 //                .subscribe(e -> System.out.println(e));
 
 
-        // 有点像信号量
-        // wheninner 吃掉了所有的onNext , 这是个没有结果的初始操作
+        // wheninner 吃掉了所有的onNext , 所有的publish完成
 //        Mono.when(Flux.just(1).doOnNext(e-> System.out.println(e)),
 //                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
 //                .subscribe(e -> System.out.println(e));
 //        Mono.whenDelayError(Flux.just(1).doOnNext(e-> System.out.println(e)),
 //                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
 //                .subscribe(e -> System.out.println(e));
-
+        // 当 n 个 Mono 都终止时返回
         Mono.when(Flux.just(1).doOnNext(e -> {
                     throw new RuntimeException(e + "");
                 }),
@@ -151,9 +151,21 @@ public class ReactorDemo {
 
 
     @Test
+    // 通过伴身流 去判断是否需要重复 执行. 当伴身流完成时就结束
+    public void testRepeatWhen() {
+        Flux.just(1, 2)
+//                .repeatWhen(e -> e.take(3)) // 多重复3次
+//                .repeatWhen(e -> e.delayElements(Duration.ofMillis(500L))) // 每次延迟500毫秒在重复
+                .repeatWhen(e -> e.takeUntil(ee -> ee == 2L)) //
+                .subscribe(e -> System.out.println(e));
+
+
+    }
+
+    @Test
     public void testRepeat() {
         Mono.just(1)
-                .repeat()
+                .repeat(3)
                 .subscribe(e -> System.out.println(e));
 
 
@@ -183,21 +195,45 @@ public class ReactorDemo {
 
     }
 
-    @Test
+    @Test //https://blog.csdn.net/weweeeeeeee/article/details/82885449
     public void testRetryWhen() {
+        Flux<String> flux = Flux
+                .<String>error(new IllegalArgumentException())
+//                .doOnError(System.out::println)
+                .retryWhen(companion -> companion.take(3)); // 这个最后是空结果
+//                .retry(3);  // 这个最后返回失败
+
+        flux.subscribe(e -> System.out.println(e)/*, e -> System.out.println(e)*/  );
+
+
+        // 类似retrywhen, 但是可以获取到原始的异常
+        Flux<String> flux2 =
+                Flux.<String>error(new IllegalArgumentException())
+                        .retryWhen(companion -> companion
+                                .zipWith(Flux.range(1, 4),
+                                        (error, index) -> {
+                                            if (index < 4) return index;
+                                            else throw Exceptions.propagate(error);
+                                        })
+                        );
+
+    }
+
+    @Test
+    public void testError() {
         AtomicInteger integer = new AtomicInteger(1);
         Mono.fromSupplier(() -> {
             int andIncrement = integer.getAndIncrement();
-            System.out.println(andIncrement);
             if (andIncrement == 2) {
-                return 1;
+                return andIncrement + "";
             } else {
                 throw new RuntimeException("123");
             }
         })
-                .retryWhen(e->Flux.interval(Duration.ofMillis(500L)))
+                .onErrorContinue((e,o)->e.getMessage())
+//                .onErrorResume(e -> Mono.just(e.getMessage()))
+//                .onErrorReturn("error")
                 .subscribe(e -> System.out.println(e), e -> e.printStackTrace());
-
 
 
     }
@@ -246,6 +282,16 @@ public class ReactorDemo {
         cache.subscribe(e -> System.out.println(e));
         Thread.sleep(1000L);
         cache.subscribe(e -> System.out.println(e));
+
+
+    }
+
+
+    @Test
+    public void testmMaterialize() throws InterruptedException {
+        Mono.just(1)
+                .materialize()
+                .subscribe(e -> System.out.println(e.getType()));
 
 
     }
