@@ -1,15 +1,24 @@
 package com.cdy.demo.framework.reactor;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import reactor.core.Disposable;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.test.StepVerifier;
+import reactor.util.context.Context;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,37 +29,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ReactorDemo {
 
+    @Before
+    public void before(){
+        Hooks.onOperatorDebug();
+    }
+
     @After
     public void sleep() throws InterruptedException {
         Thread.sleep(10000L);
     }
 
-    @Test
-    public void testContext() {
-        String key = "message";
-//        Mono.from()
-        Mono<String> stringMono = Mono.just("Hello")
-//                        .flatMap( s -> Mono.subscriberContext()
-//                                .map( ctx -> {
-//                                    System.out.println(Thread.currentThread().getName() +  ctx.get(key));
-//                                    return s + " " + ctx.get(key);
-//                                })
-//                        )
-//                        .publishOn(Schedulers.elastic())
-                .flatMap(s -> Mono.subscriberContext()
-                        .map(ctx -> {
-                            System.out.println(Thread.currentThread().getName() + ctx.get(key));
-                            return s + " " + ctx.get(key);
-                        })
-                        .subscriberContext(ctx -> ctx.put(key, "Reactor"))
-                );
-        Mono<String> r = stringMono.subscriberContext(ctx -> ctx.put(key, "World"));
-        Disposable subscribe = r.subscribe(e -> System.out.println(e));
-
-//        StepVerifier.create(r)
-//                .expectNext("Hello World Reactor")
-//                .verifyComplete();
-    }
 
 
     @Test
@@ -296,4 +284,177 @@ public class ReactorDemo {
 
     }
 
+
+    @Test
+    public void testGenerate(){
+        Flux<String> flux = Flux.generate(
+                () -> 0,
+                (state, sink) -> {
+                    sink.next("3 x " + state + " = " + 3*state);
+                    if (state == 10) sink.complete();
+                    return state + 1;
+                });
+        flux.subscribe(e -> System.out.println(e));
+
+    }
+
+    MyEventProcessor myEventProcessor = new MyEventProcessor();
+    @Test
+    public void testCreate(){
+        Flux<String> bridge = Flux.create(sink -> {
+            myEventProcessor.register(
+                    new MyEventListener<String>() {
+                        // 推
+                        public void onDataChunk(List<String> chunk) {
+                            for(String s : chunk) {
+                                sink.next(s);
+                            }
+                        }
+
+                        public void processComplete() {
+                            sink.complete();
+                        }
+                    });
+
+            sink.onRequest(n -> {  // 拉
+                List<String> messages = myEventProcessor.request(n);
+                for(String s : messages) {
+                    sink.next(s);
+                }
+            });
+        });
+
+    }
+
+    @Test
+    public void testPush(){
+        Flux<String> bridge = Flux.push(sink -> {
+            myEventProcessor.register(
+                    new SingleThreadEventListener<String>() {
+
+                        public void onDataChunk(List<String> chunk) {
+                            for(String s : chunk) {
+                                sink.next(s);
+                            }
+                        }
+
+                        public void processComplete() {
+                            sink.complete();
+                        }
+
+                        public void processError(Throwable e) {
+                            sink.error(e);
+                        }
+                    });
+        });
+
+    }
+
+    @Test
+    public void testHandler(){
+        Flux<String> alphabet = Flux.just(-1, 30, 13, 9, 20)
+                .handle((i, sink) -> {
+                    String letter = alphabet(i);
+                    if (letter != null)
+                        sink.next(letter);
+                });
+
+        alphabet.subscribe(System.out::println);
+    }
+    public String alphabet(int letterNumber) {
+        if (letterNumber < 1 || letterNumber > 26) {
+            return null;
+        }
+        int letterIndexAscii = 'A' + letterNumber - 1;
+        return "" + (char) letterIndexAscii;
+    }
+
+    @Test
+    public void testContext() {
+        String key = "message";
+//        Mono.from()
+        Mono<String> stringMono = Mono.just("Hello")
+//                        .flatMap( s -> Mono.subscriberContext()
+//                                .map( ctx -> {
+//                                    System.out.println(Thread.currentThread().getName() +  ctx.get(key));
+//                                    return s + " " + ctx.get(key);
+//                                })
+//                        )
+//                        .publishOn(Schedulers.elastic())
+                .flatMap(s -> Mono.subscriberContext()
+                        .map(ctx -> {
+                            System.out.println(Thread.currentThread().getName() + ctx.get(key));
+                            return s + " " + ctx.get(key);
+                        })
+                        .subscriberContext(ctx -> ctx.put(key, "Reactor"))
+                );
+        Mono<String> r = stringMono.subscriberContext(ctx -> ctx.put(key, "World"));
+        Disposable subscribe = r.subscribe(e -> System.out.println(e));
+
+//        StepVerifier.create(r)
+//                .expectNext("Hello World Reactor")
+//                .verifyComplete();
+    }
+
+
+    @Test
+    public void testContext2(){
+        Mono<String> put = doPut("www.example.com", Mono.just("Walter"))
+                .subscriberContext(Context.of(HTTP_CORRELATION_ID, "2-j3r9afaf92j-afkaf"))
+                .filter(t -> t.getT1() < 300)
+                .map(Tuple2::getT2);
+
+        StepVerifier.create(put)
+                .expectNext("PUT <Walter> sent to www.example.com with header X-Correlation-ID = 2-j3r9afaf92j-afkaf")
+                .verifyComplete();
+
+    }
+    static final String HTTP_CORRELATION_ID = "reactive.http.library.correlationId";
+
+    Mono<Tuple2<Integer, String>> doPut(String url, Mono<String> data) {
+        Mono<Tuple2<String, Optional<Object>>> dataAndContext =
+                data.zipWith(Mono.subscriberContext()
+                        .map(c -> c.getOrEmpty(HTTP_CORRELATION_ID)));
+
+        return dataAndContext
+                .<String>handle((dac, sink) -> {
+                    if (dac.getT2().isPresent()) {
+                        sink.next("PUT <" + dac.getT1() + "> sent to " + url + " with header X-Correlation-ID = " + dac.getT2().get());
+                    }
+                    else {
+                        sink.next("PUT <" + dac.getT1() + "> sent to " + url);
+                    }
+                    sink.complete();
+                })
+                .map(msg -> Tuples.of(200, msg));
+    }
+}
+
+interface MyEventListener<T> {
+    void onDataChunk(List<T> chunk);
+    void processComplete();
+}
+class SingleThreadEventListener<T> implements MyEventListener<T>{
+
+    @Override
+    public void onDataChunk(List<T> chunk) {
+    }
+
+    @Override
+    public void processComplete() {
+
+    }
+}
+
+
+class MyEventProcessor{
+    List<MyEventListener<?>> list = new ArrayList<>();
+
+    public void register(MyEventListener<?> listener){
+        list.add(listener);
+    }
+
+    public List<String> request(long n) {
+        return null;
+    }
 }
