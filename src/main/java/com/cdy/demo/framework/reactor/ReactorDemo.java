@@ -3,6 +3,7 @@ package com.cdy.demo.framework.reactor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 import reactor.core.Disposable;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
@@ -23,7 +24,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * todo
+ * reactor学习
+ * https://htmlpreview.github.io/?https://github.com/get-set/reactor-core/blob/master-zh/src/docs/
  * Created by 陈东一
  * 2019/9/22 0022 14:39
  */
@@ -396,6 +398,32 @@ public class ReactorDemo {
 //                .verifyComplete();
     }
 
+    /**
+     * userService.getFavorites(userId)
+     *            .timeout(Duration.ofMillis(800))  //超时限定
+     *            .onErrorResume(cacheService.cachedFavoritesFor(userId)) //错误的话就走缓存
+     *            .flatMap(favoriteService::getDetails)  //获取对应的详情
+     *            .switchIfEmpty(suggestionService.getSuggestions()) //如果详情为空就获取显示别的
+     *            .take(5) //限制5条
+     *            .publishOn(UiUtils.uiThreadScheduler())
+     *            .subscribe(uiList::show, UiUtils::errorPopup);
+     */
+    @Test
+    public void testContext1(){
+        String key = "message";
+
+        /*Mono<String> r =*/ Mono.subscriberContext()
+                .map(ctx -> ctx.put(key, "Hello"))
+                .doOnNext(e -> System.out.println("1"+e.get(key).toString()))
+                .flatMap(ctx -> Mono.subscriberContext()) //flatmap 会重新订阅一次, 所以原来额的context没法传递下来
+                .map(ctx -> ctx.getOrDefault(key, "Default"))
+                .subscribe(e -> System.out.println(e));
+
+//        StepVerifier.create(r)
+//                .expectNext("Default")
+//                .verifyComplete();
+
+    }
 
     @Test
     public void testContext2(){
@@ -412,6 +440,8 @@ public class ReactorDemo {
     static final String HTTP_CORRELATION_ID = "reactive.http.library.correlationId";
 
     Mono<Tuple2<Integer, String>> doPut(String url, Mono<String> data) {
+        // ZipCoordinator 包含最后的订阅者, 它被订阅后等待 ZipInner推数据过来
+        // ZipInner 订阅原始流和MonoContext流, 然后request在把数据都给ZipCoordinator再到最后的订阅者
         Mono<Tuple2<String, Optional<Object>>> dataAndContext =
                 data.zipWith(Mono.subscriberContext()
                         .map(c -> c.getOrEmpty(HTTP_CORRELATION_ID)));
@@ -427,6 +457,19 @@ public class ReactorDemo {
                     sink.complete();
                 })
                 .map(msg -> Tuples.of(200, msg));
+    }
+
+    public Flux<String> processOrFallback(Mono<String> source, Publisher<String> fallback) {
+        return source
+                .flatMapMany(phrase -> Flux.fromArray(phrase.split("\\s+")))
+                .switchIfEmpty(fallback); //当complete时没有处理过数据那么就订阅新的
+    }
+
+    @Test
+    public void testSwitchIfEmpty(){
+        StepVerifier.create(processOrFallback(Mono.empty(), Mono.just("EMPTY_PHRASE")))
+                .expectNext("EMPTY_PHRASE")
+                .verifyComplete();
     }
 }
 
