@@ -1,23 +1,22 @@
 package com.cdy.demo.repeatedWheels.myTomcatNetty.server;
 
 import com.cdy.demo.repeatedWheels.myTomcatNetty.CustomConfig;
+import com.cdy.demo.repeatedWheels.myTomcatNetty.http.AbstractServlet;
 import com.cdy.demo.repeatedWheels.myTomcatNetty.http.NettyRequest;
 import com.cdy.demo.repeatedWheels.myTomcatNetty.http.NettyResponse;
-import com.cdy.demo.repeatedWheels.myTomcatNetty.http.AbstractServlet;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-
+@Slf4j
 public class RequestHandler extends ChannelInboundHandlerAdapter {
 
-	private Logger LOG = Logger.getLogger(RequestHandler.class);
-	
+
     private static final Map<Pattern,Class<?>> servletMapping = new HashMap<Pattern,Class<?>>();
     
     static{
@@ -55,7 +54,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
             String uri = request.getUri();
             String method = request.getMethod();
   
-            LOG.info(String.format("Uri:%s method %s", uri, method));  
+            log.info(String.format("Uri:%s method %s", uri, method));
   
             boolean hasPattern = false;
             for (Entry<Pattern, Class<?>> entry : servletMapping.entrySet()) {

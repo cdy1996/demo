@@ -1,7 +1,5 @@
 package com.cdy.demo.repeatedWheels.myTomcatNetty.server;
 
-import org.apache.log4j.Logger;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -12,11 +10,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
-  
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class NettyTomcat {
 	
-	private static Logger LOG = Logger.getLogger(NettyTomcat.class);
-	
+
     public void start(int port) throws Exception {  
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();  
@@ -38,7 +37,7 @@ public class NettyTomcat {
             //绑定服务端口
             ChannelFuture f = b.bind(port).sync();
             
-            LOG.info("HTTP服务已启动，监听端口:" + port);
+            log.info("HTTP服务已启动，监听端口:" + port);
              
             //开始接收客户
             f.channel().closeFuture().sync();  

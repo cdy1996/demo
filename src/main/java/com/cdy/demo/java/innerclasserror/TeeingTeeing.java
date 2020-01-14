@@ -101,7 +101,7 @@ public class TeeingTeeing {
     
     
       // 正确C类的所有方法引用改为 匿名类
-        class C implements Collector<T, PairBox, R> {
+       /* class C implements Collector<T, PairBox, R> {
     
            
     
@@ -146,14 +146,14 @@ public class TeeingTeeing {
                 characteristics.add(Characteristics.UNORDERED);
                 return characteristics;
             }
-        };
+        };*/
     
         
         // 错误 在编译后会有问题
-       /* class C1 implements Collector<T, PairBox, R> {
-        
-        
-        
+        class C implements Collector<T, PairBox, R> {
+
+
+
             @Override
             public Supplier<PairBox> supplier() {
                 return new Supplier<PairBox>() {
@@ -163,29 +163,29 @@ public class TeeingTeeing {
                     }
                 };
             }
-        
+
             @Override
             public BiConsumer<PairBox, T> accumulator() {
                 return PairBox::add;
             }
-        
+
             @Override
             public BinaryOperator<PairBox> combiner() {
                 return PairBox::combine;
             }
-        
+
             @Override
             public Function<PairBox, R> finisher() {
                 return PairBox::get;
             }
-        
+
             @Override
             public Set<Characteristics> characteristics() {
                 HashSet<Characteristics> characteristics = new HashSet<>();
                 characteristics.add(Characteristics.UNORDERED);
                 return characteristics;
             }
-        };*/
+        };
         return new C();
     }
     

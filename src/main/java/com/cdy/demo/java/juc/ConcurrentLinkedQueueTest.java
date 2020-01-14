@@ -5,7 +5,6 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
-import static org.apache.tomcat.jni.Time.now;
 
 public class ConcurrentLinkedQueueTest {
 
@@ -33,7 +32,7 @@ class Task implements Delayed{
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(time - now(), TimeUnit.NANOSECONDS);
+        return unit.convert(time - System.currentTimeMillis(), TimeUnit.NANOSECONDS);
     }
 
     @Override
