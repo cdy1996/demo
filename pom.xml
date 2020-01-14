@@ -496,9 +496,32 @@
             <version>5.5.0</version>
         </dependency>-->
 
-
-
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-r2dbc</artifactId>
+            <version>1.1.0.BUILD-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rsocket</groupId>
+            <artifactId>rsocket-core</artifactId>
+            <version>1.0.0-RC3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rsocket</groupId>
+            <artifactId>rsocket-transport-netty</artifactId>
+            <version>1.0.0-RC3</version>
+        </dependency>
      </dependencies>
+
+    <repositories>
+        <repository>
+            <id>spring-libs-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>https://repo.spring.io/libs-snapshot</url>
+        </repository>
+    </repositories>
+
+
 
     <pluginRepositories><!-- 插件库 -->
         <pluginRepository>
@@ -508,6 +531,7 @@
     </pluginRepositories>
 
     <build>
+
         <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>
@@ -529,6 +553,8 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>grpc-compile</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>compile</goal>
                             <goal>compile-custom</goal>
@@ -542,27 +568,20 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>-->
 
-            <!--<plugin>
+            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
                 <executions>
                     <execution>
-                        <id>compile</id>
+                        <id>kotlin-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>reactor1-compile</id>
-                        <phase>reactor1-compile</phase>
-                        <goals>
-                            <goal>reactor1-compile</goal>
-                        </goals>
-                    </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
              <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-compiler-plugin</artifactId>
