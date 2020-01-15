@@ -10,6 +10,11 @@ import org.springframework.data.r2dbc.core.DatabaseClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+/**
+ * https://www.jdon.com/52285
+ * https://github.com/r2dbc/r2dbc-h2
+ * https://docs.spring.io/spring-data/r2dbc/docs/1.0.x/reference/html/#get-started:first-steps:what
+ */
 @Slf4j
 public class R2dbcDemo {
 

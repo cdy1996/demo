@@ -261,7 +261,7 @@
             </exclusions>
         </dependency>
 
-        <dependency>
+       <!-- <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.11</artifactId>
             <version>1.0.0</version>
@@ -283,7 +283,7 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
 
       <!--  <dependency>
@@ -447,7 +447,7 @@
         </dependency>
 
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty</artifactId>
             <version>${grpc.version}</version>
@@ -489,7 +489,7 @@
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
             <version>${grpc.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>io.zipkin.brave</groupId>
@@ -522,6 +522,11 @@
             <artifactId>rsocket-transport-netty</artifactId>
             <version>1.0.0-RC3</version>
         </dependency>
+        <dependency>
+            <groupId>io.rsocket</groupId>
+            <artifactId>rsocket-transport-local</artifactId>
+            <version>1.0.0-RC3</version>
+        </dependency>
      </dependencies>
 
     <repositories>
@@ -542,6 +547,18 @@
     </pluginRepositories>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
 
         <extensions>
             <extension>
@@ -551,28 +568,30 @@
             </extension>
         </extensions>
 
-        <plugins>
-            <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.5.0</version>
-                <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:3.0.0:exe:${os.detected.classifier}</protocArtifact>
-                    <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.15.0:exe:${os.detected.classifier}</pluginArtifact>
+       <plugins>
+           <!--https://my.oschina.net/u/930279/blog/614238-->
+           <!--https://www.cnblogs.com/crazymakercircle/p/10093385.html-->
+           <!--   <plugin>
+                 <groupId>org.xolstice.maven.plugins</groupId>
+                 <artifactId>protobuf-maven-plugin</artifactId>
+                 <version>0.5.0</version>
+                 <configuration>
+                     <protocArtifact>com.google.protobuf:protoc:3.0.0:exe:${os.detected.classifier}</protocArtifact>
+                     <pluginId>grpc-java</pluginId>
+                     <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.15.0:exe:${os.detected.classifier}</pluginArtifact>
 
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>grpc-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>compile-custom</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                 </configuration>
+                 <executions>
+                     <execution>
+                         <id>grpc-compile</id>
+                         <phase>compile</phase>
+                         <goals>
+                             <goal>compile</goal>
+                             <goal>compile-custom</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+             </plugin>-->
 
          <!--   <plugin>
                 <groupId>org.springframework.boot</groupId>
