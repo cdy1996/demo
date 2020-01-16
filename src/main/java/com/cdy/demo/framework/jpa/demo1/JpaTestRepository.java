@@ -1,12 +1,13 @@
 package com.cdy.demo.framework.jpa.demo1;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 @Repository
-//@Transactional
+@Transactional
 public class JpaTestRepository implements TestRepository {
 	@PersistenceUnit
 	private EntityManagerFactory emf;
