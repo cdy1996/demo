@@ -3,6 +3,7 @@ package com.cdy.demo.framework.jpa.demo1;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
@@ -13,7 +14,8 @@ public class JpaTestRepository implements TestRepository {
 	private EntityManagerFactory emf;
 	
 	public void addTest(Test record){
-		emf.createEntityManager().persist(record);
+		EntityManager entityManager = emf.createEntityManager();
+		entityManager.persist(record);
 	}
 	
 	public Test getTestByQuality(Integer quality){
