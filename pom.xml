@@ -303,6 +303,7 @@
         </dependency>-->
 
 
+
       <!--  <dependency>
             <groupId>org.axonframework</groupId>
             <artifactId>axon-spring</artifactId>
@@ -338,6 +339,8 @@
             <groupId>org.axonframework</groupId>
             <artifactId>axon-spring-boot-starter</artifactId>
             <version>4.1.1</version>
+            <version>4.2.1</version>
+            <version>3.3.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.axonframework</groupId>
@@ -345,6 +348,7 @@
                 </exclusion>
             </exclusions>
         </dependency>-->
+
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava axon 依赖了 guava-->
         <dependency>
             <groupId>com.google.guava</groupId>

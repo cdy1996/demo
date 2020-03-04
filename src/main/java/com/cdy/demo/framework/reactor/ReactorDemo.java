@@ -18,10 +18,12 @@ import reactor.util.function.Tuples;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 /**
  * reactor学习
@@ -437,6 +439,12 @@ public class ReactorDemo {
                 .expectNext("PUT <Walter> sent to www.example.com with header X-Correlation-ID = 2-j3r9afaf92j-afkaf")
                 .verifyComplete();
 
+        StepVerifier.withVirtualTime(() -> Mono.delay(Duration.ofDays(1)))
+                .expectSubscription()
+                .expectNoEvent(Duration.ofDays(1))
+                .expectNext(Long.valueOf(0))
+                .verifyComplete();
+
     }
     static final String HTTP_CORRELATION_ID = "reactive.http.library.correlationId";
 
@@ -471,6 +479,42 @@ public class ReactorDemo {
         StepVerifier.create(processOrFallback(Mono.empty(), Mono.just("EMPTY_PHRASE")))
                 .expectNext("EMPTY_PHRASE")
                 .verifyComplete();
+    }
+
+
+
+    @Test
+    public void testTransform(){
+        Function<Flux<String>, Flux<String>> filterAndMap =
+                f -> f.filter(color -> !color.equals("orange"))
+                        .map(String::toUpperCase);
+
+        Flux.fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
+                .doOnNext(System.out::println)
+                .transform(filterAndMap)
+                .subscribe(d -> System.out.println("Subscriber to Transformed MapAndFilter: "+d));
+    }
+
+    @Test
+    public void testCompose(){
+        AtomicInteger ai = new AtomicInteger();
+        Function<Flux<String>, Flux<String>> filterAndMap = f -> {
+            if (ai.incrementAndGet() == 1) {
+                return f.filter(color -> !color.equals("orange"))
+                        .map(String::toUpperCase);
+            }
+            return f.filter(color -> !color.equals("purple"))
+                    .map(String::toUpperCase);
+        };
+
+        Flux<String> composedFlux =
+                Flux.fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
+                        .doOnNext(System.out::println)
+//                        .compose(filterAndMap);
+                        .transformDeferred(filterAndMap);
+
+        composedFlux.subscribe(d -> System.out.println("Subscriber 1 to Composed MapAndFilter :"+d));
+        composedFlux.subscribe(d -> System.out.println("Subscriber 2 to Composed MapAndFilter: "+d));
     }
 }
 
