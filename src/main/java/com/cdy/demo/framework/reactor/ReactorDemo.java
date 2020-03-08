@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * reactor学习
@@ -536,13 +538,34 @@ class SingleThreadEventListener<T> implements MyEventListener<T>{
 
 
 class MyEventProcessor{
-    List<MyEventListener<?>> list = new ArrayList<>();
+    List<MyEventListener<String>> list = new ArrayList<>();
 
-    public void register(MyEventListener<?> listener){
+    public void register(MyEventListener<String> listener){
         list.add(listener);
     }
-
+    
+    List<String> queue = new ArrayList<>();
+    
     public List<String> request(long n) {
-        return null;
+        if (n < queue.size()) {
+            List<String> strings = queue.stream().limit(n).collect(Collectors.toList());
+            queue.removeAll(strings);
+            return strings;
+        } else {
+            List<String> strings = queue.stream().collect(Collectors.toList());
+            queue.clear();
+            return strings;
+        }
     }
+    public void dataChuck(String ...s){
+        list.forEach(e -> {
+            List<String> ts = Arrays.asList(s);
+            e.onDataChunk(ts);
+        });
+    }
+    
+    public void processComplete(){
+        list.forEach(MyEventListener::processComplete);
+    }
+    
 }
