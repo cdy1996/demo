@@ -551,6 +551,19 @@
             <artifactId>rsocket-transport-local</artifactId>
             <version>1.0.0-RC3</version>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb</artifactId>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb-api</artifactId>
+            <version>0.7</version>
+        </dependency>
      </dependencies>
 
     <repositories>
