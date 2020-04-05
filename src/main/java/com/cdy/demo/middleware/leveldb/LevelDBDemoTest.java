@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+/**
+ * https://blog.csdn.net/future_1024/article/details/82155680
+ */
 public class LevelDBDemoTest {
  
 	private static final String PATH = "/data/leveldb";
