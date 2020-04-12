@@ -50,12 +50,12 @@ public class ReactorDemo {
     @Test
     public void testJoin() throws IOException {
         Flux<Integer> just = Flux.just(1, 2, 3);
-//        Flux<Integer> just1 = Flux.just(4, 5, 6);
-//        just.join(just1,
-//                x -> Mono.just(x).delay(Duration.ofMillis(0)), //错误用法
-//                y -> Mono.just(y),
-//                (x, y) -> x.toString() + "-" + y.toString()
-//        ).subscribe(x -> System.out.println("onNext: " + x));
+        Flux<Integer> just1 = Flux.just(4, 5, 6);
+        just.join(just1,
+                x -> Mono.just(x).delay(Duration.ofMillis(0)), //错误用法
+                y -> Mono.just(y),
+                (x, y) -> x.toString() + "-" + y.toString()
+        ).subscribe(x -> System.out.println("onNext: " + x));
         just.subscribe(x -> System.out.println("onNext: " + x));
         just.subscribe(x -> System.out.println("onNext: " + x));
         System.in.read();
@@ -264,7 +264,18 @@ public class ReactorDemo {
         Flux.just(1, 2, 3, 4, 5).delayElements(Duration.ofSeconds(1L))
                 .window(Duration.ofMillis(500L))
                 .subscribe(e -> e.buffer().subscribe(ee -> System.out.println(ee)));
-
+    }
+    
+    @Test
+    public void testWindow(){
+        Flux.interval(Duration.ofMillis(300))//.delayElements(Duration.ofMillis((long) (Math.random() * 500)))
+                .window(Duration.ofMillis(500L))
+                .flatMap(e -> e.count())
+                .window(2)
+//                .window(2,1)
+//                .flatMap(e -> e.reduce((a, b) -> a + b))
+                .flatMap(e -> e.scan((a, b) -> a + b).skip(2))
+                .subscribe(e -> System.out.println(new Date() + ":" + e));
     }
 
     // 和buffer的区别在 buffer在于聚集, 而cache并不聚集
