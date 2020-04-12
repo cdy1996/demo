@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.rx;
+package com.cdy.demo.framework.rx.rxjava1;
 
 import rx.Observable;
 

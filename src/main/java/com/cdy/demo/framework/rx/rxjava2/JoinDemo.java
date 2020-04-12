@@ -1,6 +1,7 @@
-package com.cdy.demo.framework.rx;
+package com.cdy.demo.framework.rx.rxjava2;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -8,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * todo
  * Created by 陈东一
- * 2019/12/28 0028 22:17
+ * 2019/12/30 0030 23:25
  */
-public class RxJavaDemo {
+public class JoinDemo {
     
     
     public static void main(String[] args) throws IOException {
@@ -44,36 +45,5 @@ public class RxJavaDemo {
         System.in.read();
         
     }
-    
-    public static void test() {
-        //输出[0,1,2,3]序列
-        Observable<Integer> ob = Observable.create(subscriber -> {
-            for (int i = 0; i < 4; i++) {
-                subscriber.onNext(i);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        
-        Observable.just("hello")
-                .join(ob,
-                        s -> {
-                            System.out.println("1->" + s);
-                            //使Observable延迟3000毫秒执行
-                            return Observable.timer(3000, TimeUnit.MILLISECONDS);
-                            
-                        },
-                        integer -> {
-                            System.out.println("2->" + integer + "");
-                            //使Observable延迟2000毫秒执行
-                            return Observable.timer(2000, TimeUnit.MILLISECONDS);
-                        },
-                        
-                        (s, integer) -> s + integer ////结合上面发射的数据
-                )
-                .subscribe(o -> System.out.println("sum: " + o));
-    }
 }
+

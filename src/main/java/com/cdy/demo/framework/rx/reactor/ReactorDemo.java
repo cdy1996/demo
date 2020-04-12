@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.reactor;
+package com.cdy.demo.framework.rx.reactor;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,15 +17,12 @@ import reactor.util.function.Tuples;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
-import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * reactor学习
@@ -34,19 +31,18 @@ import java.util.stream.Collectors;
  * 2019/9/22 0022 14:39
  */
 public class ReactorDemo {
-
+    
     @Before
-    public void before(){
+    public void before() {
         Hooks.onOperatorDebug();
     }
-
+    
     @After
     public void sleep() throws InterruptedException {
         Thread.sleep(10000L);
     }
-
-
-
+    
+    
     @Test
     public void testJoin() throws IOException {
         Flux<Integer> just = Flux.just(1, 2, 3);
@@ -60,8 +56,8 @@ public class ReactorDemo {
         just.subscribe(x -> System.out.println("onNext: " + x));
         System.in.read();
     }
-
-
+    
+    
     // using 提供可关闭的资源, usingwhen只取第一个, mono和flux的差异在于第二个参数
     @Test
     public void testUsing() {
@@ -85,8 +81,8 @@ public class ReactorDemo {
 //                e -> Mono.just(e),
 //                e -> Mono.just(e))
 //                .subscribe(e -> System.out.println(e));
-
-
+    
+    
         // wheninner 吃掉了所有的onNext , 所有的publish完成
 //        Mono.when(Flux.just(1).doOnNext(e-> System.out.println(e)),
 //                Flux.just(1, 2).doOnNext(e-> System.out.println(e)))
@@ -106,10 +102,10 @@ public class ReactorDemo {
                 }),
                 Flux.just(1, 2).doOnNext(e -> System.out.println(e)))
                 .subscribe(e -> System.out.println(e), e -> System.out.println(e.getMessage()));
-
+    
     }
-
-
+    
+    
     @Test
     public void testPublish() {
         Flux<Integer> just = Flux.just(1, 2, 3).doOnNext(e -> System.out.println("just"));
@@ -124,12 +120,12 @@ public class ReactorDemo {
                                 .doOnNext(ee -> System.out.println("just1" + ee))))
         )
                 .subscribe(e -> System.out.println(e));
-
+        
         // 特殊的优化
         just.flatMap(e -> Flux.just(e, e + 10, e + 100, e + 1000))
                 .subscribe(e -> System.out.println(e));
     }
-
+    
     // 通过connect后开始释放流, 订阅者订阅后获取热流
     @Test
     public void testPublish2() {
@@ -142,8 +138,8 @@ public class ReactorDemo {
         publish
                 .subscribe(e -> System.out.println(e));
     }
-
-
+    
+    
     @Test
     // 通过伴身流 去判断是否需要重复 执行. 当伴身流完成时就结束
     public void testRepeatWhen() {
@@ -152,19 +148,19 @@ public class ReactorDemo {
 //                .repeatWhen(e -> e.delayElements(Duration.ofMillis(500L))) // 每次延迟500毫秒在重复
                 .repeatWhen(e -> e.takeUntil(ee -> ee == 2L)) //
                 .subscribe(e -> System.out.println(e));
-
-
+        
+        
     }
-
+    
     @Test
     public void testRepeat() {
         Mono.just(1)
                 .repeat(3)
                 .subscribe(e -> System.out.println(e));
-
-
+        
+        
     }
-
+    
     @Test
     public void testRetry() {
         AtomicInteger integer = new AtomicInteger(1);
@@ -186,9 +182,9 @@ public class ReactorDemo {
 //                .retry();
 //        StepVerifier.create(retry)
 //                .expectError();
-
+    
     }
-
+    
     @Test //https://blog.csdn.net/weweeeeeeee/article/details/82885449
     public void testRetryWhen() {
         Flux<String> flux = Flux
@@ -196,10 +192,10 @@ public class ReactorDemo {
 //                .doOnError(System.out::println)
                 .retryWhen(companion -> companion.take(3)); // 这个最后是空结果
 //                .retry(3);  // 这个最后返回失败
-
-        flux.subscribe(e -> System.out.println(e)/*, e -> System.out.println(e)*/  );
-
-
+        
+        flux.subscribe(e -> System.out.println(e)/*, e -> System.out.println(e)*/);
+        
+        
         // 类似retrywhen, 但是可以获取到原始的异常
         Flux<String> flux2 =
                 Flux.<String>error(new IllegalArgumentException())
@@ -210,9 +206,9 @@ public class ReactorDemo {
                                             else throw Exceptions.propagate(error);
                                         })
                         );
-
+        
     }
-
+    
     @Test
     public void testError() {
         AtomicInteger integer = new AtomicInteger(1);
@@ -224,32 +220,32 @@ public class ReactorDemo {
                 throw new RuntimeException("123");
             }
         })
-                .onErrorContinue((e,o)->e.getMessage())
+                .onErrorContinue((e, o) -> e.getMessage())
 //                .onErrorResume(e -> Mono.just(e.getMessage()))
 //                .onErrorReturn("error")
                 .subscribe(e -> System.out.println(e), e -> e.printStackTrace());
-
-
+        
+        
     }
-
+    
     // 失去的时间, 代表每个元素之间的间隔
     @Test
     public void testElapsed() throws InterruptedException {
         Mono.delay(Duration.ofSeconds(1L)).subscribe(e -> System.out.println(e));
-
+    
         System.out.println();
         // 通过 Mono.delay来实现延迟
         Flux.just(1, 2, 3, 4, 5).delayElements(Duration.ofSeconds(1L))
                 .elapsed()
                 .subscribe(e -> System.out.println(e));
-
+    
         Thread.sleep(5000L);
         System.out.println();
         Flux.interval(Duration.ofSeconds(1L))
                 .elapsed()
                 .subscribe(e -> System.out.println(e));
     }
-
+    
     // 缓冲
     @Test
     public void testBufferWhen() {
@@ -259,7 +255,7 @@ public class ReactorDemo {
                     return Mono.delay(Duration.ofMillis(500L));
                 })
                 .subscribe(e -> System.out.println(e));
-
+    
         // 类似window
         Flux.just(1, 2, 3, 4, 5).delayElements(Duration.ofSeconds(1L))
                 .window(Duration.ofMillis(500L))
@@ -267,117 +263,70 @@ public class ReactorDemo {
     }
     
     @Test
-    public void testWindow(){
+    public void testWindow() throws IOException {
         Flux.interval(Duration.ofMillis(300))//.delayElements(Duration.ofMillis((long) (Math.random() * 500)))
                 .window(Duration.ofMillis(500L))
                 .flatMap(e -> e.count())
                 .window(2)
 //                .window(2,1)
 //                .flatMap(e -> e.reduce((a, b) -> a + b))
-                .flatMap(e -> e.scan((a, b) -> a + b).skip(2))
+                // scan + skip（跳过scan多于的中间步骤） 可以保证在最后一组数据不完整的情况下 过滤掉最后一组数据
+                .flatMap(e -> e.scan((a, b) -> a + b).skip(1))
                 .subscribe(e -> System.out.println(new Date() + ":" + e));
+        
+        System.in.read();
     }
-
+    
     // 和buffer的区别在 buffer在于聚集, 而cache并不聚集
     @Test
     public void testCache() throws InterruptedException {
         Flux<Integer> cache = Flux.just(1, 2, 3, 4, 5).delayElements(Duration.ofMillis(500L))
                 .cache(Duration.ofSeconds(1L));
-
+    
         cache.subscribe(e -> System.out.println(e));
         Thread.sleep(1000L);
         cache.subscribe(e -> System.out.println(e));
-
-
+    
+    
     }
-
-
+    
+    
     @Test
     public void testmMaterialize() throws InterruptedException {
         Mono.just(1)
                 .materialize()
                 .subscribe(e -> System.out.println(e.getType()));
-
-
+        
+        
     }
-
-
+    
+    
     @Test
-    public void testGenerate(){
+    public void testGenerate() {
         Flux<String> flux = Flux.generate(
                 () -> 0,
                 (state, sink) -> {
-                    sink.next("3 x " + state + " = " + 3*state);
+                    sink.next("3 x " + state + " = " + 3 * state);
                     if (state == 10) sink.complete();
                     return state + 1;
                 });
         flux.subscribe(e -> System.out.println(e));
-
+        
     }
-
-    MyEventProcessor myEventProcessor = new MyEventProcessor();
+    
+    
     @Test
-    public void testCreate(){
-        Flux<String> bridge = Flux.create(sink -> {
-            myEventProcessor.register(
-                    new MyEventListener<String>() {
-                        // 推
-                        public void onDataChunk(List<String> chunk) {
-                            for(String s : chunk) {
-                                sink.next(s);
-                            }
-                        }
-
-                        public void processComplete() {
-                            sink.complete();
-                        }
-                    });
-
-            sink.onRequest(n -> {  // 拉
-                List<String> messages = myEventProcessor.request(n);
-                for(String s : messages) {
-                    sink.next(s);
-                }
-            });
-        });
-
-    }
-
-    @Test
-    public void testPush(){
-        Flux<String> bridge = Flux.push(sink -> {
-            myEventProcessor.register(
-                    new SingleThreadEventListener<String>() {
-
-                        public void onDataChunk(List<String> chunk) {
-                            for(String s : chunk) {
-                                sink.next(s);
-                            }
-                        }
-
-                        public void processComplete() {
-                            sink.complete();
-                        }
-
-                        public void processError(Throwable e) {
-                            sink.error(e);
-                        }
-                    });
-        });
-
-    }
-
-    @Test
-    public void testHandler(){
+    public void testHandler() {
         Flux<String> alphabet = Flux.just(-1, 30, 13, 9, 20)
                 .handle((i, sink) -> {
                     String letter = alphabet(i);
                     if (letter != null)
                         sink.next(letter);
                 });
-
+        
         alphabet.subscribe(System.out::println);
     }
+    
     public String alphabet(int letterNumber) {
         if (letterNumber < 1 || letterNumber > 26) {
             return null;
@@ -385,7 +334,7 @@ public class ReactorDemo {
         int letterIndexAscii = 'A' + letterNumber - 1;
         return "" + (char) letterIndexAscii;
     }
-
+    
     @Test
     public void testContext() {
         String key = "message";
@@ -412,24 +361,25 @@ public class ReactorDemo {
 //                .expectNext("Hello World Reactor")
 //                .verifyComplete();
     }
-
+    
     /**
      * userService.getFavorites(userId)
-     *            .timeout(Duration.ofMillis(800))  //超时限定
-     *            .onErrorResume(cacheService.cachedFavoritesFor(userId)) //错误的话就走缓存
-     *            .flatMap(favoriteService::getDetails)  //获取对应的详情
-     *            .switchIfEmpty(suggestionService.getSuggestions()) //如果详情为空就获取显示别的
-     *            .take(5) //限制5条
-     *            .publishOn(UiUtils.uiThreadScheduler())
-     *            .subscribe(uiList::show, UiUtils::errorPopup);
+     * .timeout(Duration.ofMillis(800))  //超时限定
+     * .onErrorResume(cacheService.cachedFavoritesFor(userId)) //错误的话就走缓存
+     * .flatMap(favoriteService::getDetails)  //获取对应的详情
+     * .switchIfEmpty(suggestionService.getSuggestions()) //如果详情为空就获取显示别的
+     * .take(5) //限制5条
+     * .publishOn(UiUtils.uiThreadScheduler())
+     * .subscribe(uiList::show, UiUtils::errorPopup);
      */
     @Test
-    public void testContext1(){
+    public void testContext1() {
         String key = "message";
-
-        /*Mono<String> r =*/ Mono.subscriberContext()
+        
+        /*Mono<String> r =*/
+        Mono.subscriberContext()
                 .map(ctx -> ctx.put(key, "Hello"))
-                .doOnNext(e -> System.out.println("1"+e.get(key).toString()))
+                .doOnNext(e -> System.out.println("1" + e.get(key).toString()))
                 .flatMap(ctx -> Mono.subscriberContext()) //flatmap 会重新订阅一次, 所以原来额的context没法传递下来
                 .map(ctx -> ctx.getOrDefault(key, "Default"))
                 .subscribe(e -> System.out.println(e));
@@ -438,78 +388,79 @@ public class ReactorDemo {
 //        StepVerifier.create(r)
 //                .expectNext("Default")
 //                .verifyComplete();
-
+    
     }
-
+    
     @Test
-    public void testContext2(){
+    public void testContext2() {
         Mono<String> put = doPut("www.example.com", Mono.just("Walter"))
                 .subscriberContext(Context.of(HTTP_CORRELATION_ID, "2-j3r9afaf92j-afkaf"))
                 .filter(t -> t.getT1() < 300)
                 .map(Tuple2::getT2);
-
+        
         StepVerifier.create(put)
                 .expectNext("PUT <Walter> sent to www.example.com with header X-Correlation-ID = 2-j3r9afaf92j-afkaf")
                 .verifyComplete();
-
-        StepVerifier.withVirtualTime(() -> Mono.delay(Duration.ofDays(1)))
-                .expectSubscription()
-                .expectNoEvent(Duration.ofDays(1))
-                .expectNext(Long.valueOf(0))
-                .verifyComplete();
-
     }
+    
     static final String HTTP_CORRELATION_ID = "reactive.http.library.correlationId";
-
+    
     Mono<Tuple2<Integer, String>> doPut(String url, Mono<String> data) {
         // ZipCoordinator 包含最后的订阅者, 它被订阅后等待 ZipInner推数据过来
         // ZipInner 订阅原始流和MonoContext流, 然后request在把数据都给ZipCoordinator再到最后的订阅者
         Mono<Tuple2<String, Optional<Object>>> dataAndContext =
                 data.zipWith(Mono.subscriberContext()
                         .map(c -> c.getOrEmpty(HTTP_CORRELATION_ID)));
-
+        
         return dataAndContext
                 .<String>handle((dac, sink) -> {
                     if (dac.getT2().isPresent()) {
                         sink.next("PUT <" + dac.getT1() + "> sent to " + url + " with header X-Correlation-ID = " + dac.getT2().get());
-                    }
-                    else {
+                    } else {
                         sink.next("PUT <" + dac.getT1() + "> sent to " + url);
                     }
                     sink.complete();
                 })
                 .map(msg -> Tuples.of(200, msg));
     }
-
+    
     public Flux<String> processOrFallback(Mono<String> source, Publisher<String> fallback) {
         return source
                 .flatMapMany(phrase -> Flux.fromArray(phrase.split("\\s+")))
                 .switchIfEmpty(fallback); //当complete时没有处理过数据那么就订阅新的
     }
-
+    
+    
+    public void testVirtualTime() {
+        StepVerifier.withVirtualTime(() -> Mono.delay(Duration.ofDays(1)))
+                .expectSubscription()
+                .expectNoEvent(Duration.ofDays(1))
+                .expectNext(Long.valueOf(0))
+                .verifyComplete();
+    }
+    
     @Test
-    public void testSwitchIfEmpty(){
+    public void testSwitchIfEmpty() {
         StepVerifier.create(processOrFallback(Mono.empty(), Mono.just("EMPTY_PHRASE")))
                 .expectNext("EMPTY_PHRASE")
                 .verifyComplete();
     }
-
-
-
+    
+    
     @Test
-    public void testTransform(){
+    public void testTransform() {
         Function<Flux<String>, Flux<String>> filterAndMap =
                 f -> f.filter(color -> !color.equals("orange"))
                         .map(String::toUpperCase);
-
+        
         Flux.fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
                 .doOnNext(System.out::println)
                 .transform(filterAndMap)
-                .subscribe(d -> System.out.println("Subscriber to Transformed MapAndFilter: "+d));
+                .subscribe(d -> System.out.println("Subscriber to Transformed MapAndFilter: " + d));
     }
-
+    
     @Test
-    public void testCompose(){
+    public void testCompose() {
         AtomicInteger ai = new AtomicInteger();
         Function<Flux<String>, Flux<String>> filterAndMap = f -> {
             if (ai.incrementAndGet() == 1) {
@@ -519,64 +470,33 @@ public class ReactorDemo {
             return f.filter(color -> !color.equals("purple"))
                     .map(String::toUpperCase);
         };
-
+        
         Flux<String> composedFlux =
                 Flux.fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
                         .doOnNext(System.out::println)
 //                        .compose(filterAndMap);
                         .transformDeferred(filterAndMap);
-
-        composedFlux.subscribe(d -> System.out.println("Subscriber 1 to Composed MapAndFilter :"+d));
-        composedFlux.subscribe(d -> System.out.println("Subscriber 2 to Composed MapAndFilter: "+d));
+        
+        composedFlux.subscribe(d -> System.out.println("Subscriber 1 to Composed MapAndFilter :" + d));
+        composedFlux.subscribe(d -> System.out.println("Subscriber 2 to Composed MapAndFilter: " + d));
+    }
+    
+    
+    public <T> Flux<T> appendCustomError(Flux<T> source) {
+        return source.concatWith(Mono.error(new IllegalArgumentException("custom")));
+    }
+    
+    @Test
+    public void testAppendBoomError() {
+        Flux<String> source = Flux.just("foo", "bar");
+        
+        StepVerifier.create(
+                appendCustomError(source))
+                .expectNext("foo")
+                .expectNext("bar")
+                .expectErrorMessage("custom")
+                .verify();
+        
     }
 }
 
-interface MyEventListener<T> {
-    void onDataChunk(List<T> chunk);
-    void processComplete();
-}
-class SingleThreadEventListener<T> implements MyEventListener<T>{
-
-    @Override
-    public void onDataChunk(List<T> chunk) {
-    }
-
-    @Override
-    public void processComplete() {
-
-    }
-}
-
-
-class MyEventProcessor{
-    List<MyEventListener<String>> list = new ArrayList<>();
-
-    public void register(MyEventListener<String> listener){
-        list.add(listener);
-    }
-    
-    List<String> queue = new ArrayList<>();
-    
-    public List<String> request(long n) {
-        if (n < queue.size()) {
-            List<String> strings = queue.stream().limit(n).collect(Collectors.toList());
-            queue.removeAll(strings);
-            return strings;
-        } else {
-            List<String> strings = queue.stream().collect(Collectors.toList());
-            queue.clear();
-            return strings;
-        }
-    }
-    public void dataChuck(String ...s){
-        list.forEach(e -> {
-            List<String> ts = Arrays.asList(s);
-            e.onDataChunk(ts);
-        });
-    }
-    
-    public void processComplete(){
-        list.forEach(MyEventListener::processComplete);
-    }
-    
-}

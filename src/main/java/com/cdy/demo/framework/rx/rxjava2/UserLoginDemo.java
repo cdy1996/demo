@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.rx;
+package com.cdy.demo.framework.rx.rxjava2;
 
 import io.reactivex.*;
 import io.reactivex.functions.Consumer;
@@ -14,9 +14,9 @@ import java.io.IOException;
 /**
  * 2.x demo
  */
-public class RxjavaTest {
-
-
+public class UserLoginDemo {
+    
+    
     /**
      * 转阻塞
      */

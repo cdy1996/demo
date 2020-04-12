@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.rsocket;
+package com.cdy.demo.framework.rx.rsocket;
 
 import io.rsocket.Payload;
 import io.rsocket.RSocket;

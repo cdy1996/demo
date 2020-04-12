@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.r2dbc;
+package com.cdy.demo.framework.rx.r2dbc;
 
 public class Person {
 

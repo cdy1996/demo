@@ -1,4 +1,4 @@
-package com.cdy.demo.framework;
+package com.cdy.demo.middleware.redis;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
