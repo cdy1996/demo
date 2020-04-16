@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property name="PROJECT" value="demo"></property>
 
+    <!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
 
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
-
+    <conversionRule conversionWord="mc" converterClass="com.cdy.demo.framework.logback.MyConverter"/>
 
     <appender name="my" class="com.cdy.demo.framework.logback.MyAppender">
 
     </appender>
-    <appender name="my2" class="com.cdy.demo.framework.logback.MyAppender">
+    <appender name="my2" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}][%mc][%X{REQUEST_ID}][${PROJECT}][{%msg}]%n</pattern>
+        </encoder>
 
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="my2"/>
         <!--<appender-ref ref="my" />
         <appender-ref ref="my2" />-->
     </root>
