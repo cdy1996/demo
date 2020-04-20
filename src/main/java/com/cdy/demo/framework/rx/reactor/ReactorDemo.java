@@ -505,6 +505,12 @@ public class ReactorDemo {
     public void testDelayAndSwitchMap() {
 
         Flux.<String>create(e -> {
+
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
             e.next("a");
             try {
                 Thread.sleep(300);
@@ -521,12 +527,12 @@ public class ReactorDemo {
             e.next("appl");
             e.next("apple");
             e.complete();
-        }).publishOn(Schedulers.elastic())
+        })
                 .switchMap(e -> Mono.just(e).delayElement(Duration.ofMillis(200)))
 //                .doOnNext(e-> System.out.println(e))
                 .filter(e -> e.length() > 0)
-
                 .switchMap(e -> Mono.just(e).publishOn(Schedulers.elastic()).map(ee -> {
+                    System.out.println("开始搜索，关键词为：" + ee);
                     try {
                         Thread.sleep((long) (Math.random() * 500));
                     } catch (InterruptedException ex) {
