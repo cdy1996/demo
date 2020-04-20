@@ -31,7 +31,7 @@ import java.util.function.Function;
  * 2019/9/22 0022 14:39
  */
 public class ReactorDemo {
-    
+
     @Before
     public void before() {
         Hooks.onOperatorDebug();
@@ -489,14 +489,55 @@ public class ReactorDemo {
     @Test
     public void testAppendBoomError() {
         Flux<String> source = Flux.just("foo", "bar");
-        
+
         StepVerifier.create(
                 appendCustomError(source))
                 .expectNext("foo")
                 .expectNext("bar")
                 .expectErrorMessage("custom")
                 .verify();
-        
+
+    }
+
+    //RxJava2 实战知识梳理(3) - 优化搜索联想功能
+    //https://www.jianshu.com/p/7995497baff5
+    @Test
+    public void testDelayAndSwitchMap() {
+
+        Flux.<String>create(e -> {
+            e.next("a");
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            e.next("ap");
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            e.next("app");
+            e.next("appl");
+            e.next("apple");
+            e.complete();
+        }).publishOn(Schedulers.elastic())
+                .switchMap(e -> Mono.just(e).delayElement(Duration.ofMillis(200)))
+//                .doOnNext(e-> System.out.println(e))
+                .filter(e -> e.length() > 0)
+
+                .switchMap(e -> Mono.just(e).publishOn(Schedulers.elastic()).map(ee -> {
+                    try {
+                        Thread.sleep((long) (Math.random() * 500));
+                    } catch (InterruptedException ex) {
+//                        ex.printStackTrace();
+                        Thread.interrupted();
+                    }
+                    System.out.println("完成搜索，关键词为：" + ee);
+                    return ee + ee;
+                }))
+                .subscribe(e -> System.out.println(e));
+
     }
 }
 
