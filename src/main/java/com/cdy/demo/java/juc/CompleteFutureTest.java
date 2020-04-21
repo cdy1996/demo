@@ -1,6 +1,5 @@
 package com.cdy.demo.java.juc;
 
-import io.netty.util.concurrent.CompleteFuture;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,7 +13,19 @@ public class CompleteFutureTest {
 //        Future<Double> priceAsync = getPriceAsync("!23");
 //        System.out.println(priceAsync.get());
 
-        testMultiFuture();
+//        testMultiFuture();
+
+
+        /* 测试stack 归并的demo  */
+        CompletableFuture<Integer> integerCompletableFuture = CompletableFuture.supplyAsync(() -> 1);
+
+        CompletableFuture<Integer> integerCompletableFuture1 =
+                integerCompletableFuture.whenComplete((a, b) -> System.out.println(5));
+        integerCompletableFuture.whenComplete((a, b) -> System.out.println(4));
+        CompletableFuture<Integer> integerCompletableFuture2 = integerCompletableFuture.whenComplete((e, a) -> System.out.println(3));
+
+        integerCompletableFuture2.whenComplete((a, b) -> System.out.println(1));
+        integerCompletableFuture2.whenComplete((e, a) -> System.out.println(2));
 
         System.in.read();
     }
