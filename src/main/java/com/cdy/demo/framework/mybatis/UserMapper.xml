@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mybatis.User1Dao">
+
+    <!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.cdy.demo.framework.mybatis.User1">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    <parameterMap id="user" type="com.cdy.demo.framework.mybatis.User1">
+        <parameter property="id"></parameter>
+        <parameter property="name"></parameter>
+    </parameterMap>
+
+    <!--auto generated Code-->
+    <sql id="all_column">
+        id,
+        create_time,
+        update_time,
+        password,
+        username
+    </sql>
+
+    <insert id="insertOne" parameterMap="user">
+        INSERT into USER(id, name) values (#{id}, #{name})
+    </insert>
+
+    <!--auto generated Code-->
+    <select id="selectOne" resultMap="AllColumnMap" parameterType="int">
+        SELECT
+        <include refid="all_column"/>
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+
+</mapper>

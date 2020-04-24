@@ -35,10 +35,11 @@
                 但是如果mybatis注解中包含@resultMap注解，则mapper必须配置，给resultMap注解使用 -->
         <!--SQL代码和映射信息配置文件-->
         <!--<mapper resource="com/shiyan2/dao/UserMapper.xml" />-->
-       <!-- <mapper resource="mybatis/User1Dao.xml"/>-->
-        <!--<mapper class="mq.UserDao"/>-->
+        <mapper resource="com/cdy/demo/framework/mybatis/User1Dao.xml"/>
+
+        <mapper class="com.cdy.demo.framework.mybatis.UserDao"/>
         <!--扫描包路径下所有xxMapper.xml文件-->
-        <package name="mybatis"/>
+        <!--        <package name="mybatis"/>-->
 
     </mappers>
 </configuration>

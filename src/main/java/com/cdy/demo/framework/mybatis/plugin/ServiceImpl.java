@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.mybatis;
+package com.cdy.demo.framework.mybatis.plugin;
 
 /**
  * Created by 陈东一

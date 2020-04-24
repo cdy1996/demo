@@ -1,6 +1,6 @@
 package com.cdy.demo.framework.mybatis;
 
-public interface User1Dao {
+public interface UserMapper {
     
     User1 selectOne(Integer id);
     

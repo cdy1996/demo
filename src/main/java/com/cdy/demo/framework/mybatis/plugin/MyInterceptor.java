@@ -1,4 +1,4 @@
-package com.cdy.demo.framework.mybatis;
+package com.cdy.demo.framework.mybatis.plugin;
 
 import org.apache.ibatis.plugin.*;
 

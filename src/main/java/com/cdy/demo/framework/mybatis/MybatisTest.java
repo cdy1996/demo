@@ -1,7 +1,6 @@
 package com.cdy.demo.framework.mybatis;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -11,7 +10,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 
 
 /**
@@ -19,7 +17,7 @@ import java.io.Reader;
  * 2017/12/30 16:40
  */
 @Slf4j
-public class Test1 {
+public class MybatisTest {
     
     @Test
     public void test() throws IOException {
@@ -30,10 +28,10 @@ public class Test1 {
 //        String name = scanner.next();
 //        int age = scanner.nextInt();
         
-        this.getClass().getResourceAsStream("mybatis.xml");
-        Reader reader = Resources.getResourceAsReader("mybatis.xml");
+        InputStream resourceAsStream = MybatisTest.class.getResourceAsStream("mybatis.xml");
+//        Reader reader = Resources.getResourceAsReader("mybatis.xml")
         // 2. SqlSessionFactoryBuidler实例将通过输入流调用build方法来构建 SqlSession 工厂
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceAsStream);
         // 3. 通过工厂获取 SqlSession 实例，SqlSession 完全包含了面向数据库执行 SQL 命令所需的所有方法。
         SqlSession session = sqlSessionFactory.openSession(true);
         // 4. 准备基本信息
@@ -52,25 +50,28 @@ public class Test1 {
         session.commit();
         // 6. 关闭输入流和SqlSession实例
 //        in.close();
-        reader.close();
+//        reader.close();
         session.close();
     }
     
     @Test
     public void test1() throws IOException {
         // 1. 加载MyBatis的配置文件：mybatis.xml（它也加载关联的映射文件，也就是mappers结点下的映射文件）
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("mybatis.xml");
+        InputStream in = MybatisTest.class.getResourceAsStream("mybatis.xml");
         // 2. SqlSessionFactoryBuidler实例将通过输入流调用build方法来构建 SqlSession 工厂
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
         // 3. 通过工厂获取 SqlSession 实例，SqlSession 完全包含了面向数据库执行 SQL 命令所需的所有方法。
         SqlSession session = sqlSessionFactory.openSession();
 //        User1Dao mapper = session.getMapper(User1Dao.class);
         UserDao mapper = session.getMapper(UserDao.class);
-    
+
 //        User1 user = mapper.selectOne(1);
-        User1 user = mapper.getBy(1);
-        log.info(user.toString());
+//        User1 user = mapper.getBy(1);
+    
+        User1 user2 = new User1(12, "222");
+        mapper.insertOne(user2);
         // 6. 关闭输入流和SqlSession实例
+        session.commit();
         in.close();
         session.close();
     }
@@ -78,8 +79,8 @@ public class Test1 {
     @Test
     public void test2() {
         ApplicationContext context = new ClassPathXmlApplicationContext("classpath:com/cdy/demo/framework/spring/applicationContext.xml");
-        User1Dao user1Dao = (User1Dao) context.getBean("user1Dao");
-        User1 user1 = user1Dao.selectOne(1);
+        UserMapper userMapper = (UserMapper) context.getBean("user1Dao");
+        User1 user1 = userMapper.selectOne(1);
         log.info(user1.toString());
     }
     
