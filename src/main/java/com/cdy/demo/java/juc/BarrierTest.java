@@ -5,16 +5,16 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.*;
 
-public class JUCTest {
+public class BarrierTest {
     
-
+    
     @Test
     public void testPhaser() throws IOException {
-        Phaser phaser =new Phaser(2);
-        
-        new Thread(()->{
+        Phaser phaser = new Phaser(0);
+        phaser.register();
+        new Thread(() -> {
             try {
-
+                
                 System.out.println("同学1 到场");
                 phaser.arriveAndAwaitAdvance();
                 System.out.println("同学1 开始做第一道题");
@@ -27,12 +27,13 @@ public class JUCTest {
                 System.out.println("同学1 开始做第三道题");
                 Thread.sleep(1000L);
                 System.out.println("同学1 做完第三道题");
-
+                
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
-        new Thread(()->{
+        phaser.register();
+        new Thread(() -> {
             try {
                 System.out.println("同学2 到场");
                 phaser.arriveAndAwaitAdvance();

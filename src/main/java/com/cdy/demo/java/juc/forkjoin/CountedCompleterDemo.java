@@ -1,4 +1,4 @@
-package com.cdy.demo.java.juc;
+package com.cdy.demo.java.juc.forkjoin;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
