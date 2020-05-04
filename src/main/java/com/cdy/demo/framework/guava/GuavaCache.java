@@ -10,37 +10,18 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+
+//https://www.cnblogs.com/fnlingnzb-learner/p/11022152.html
 public class GuavaCache {
-
     @Test
-    public void testLoadingCache(){
-        LoadingCache<String, String> graphs = CacheBuilder.newBuilder()
-                .maximumSize(1000) //最大数量
-                .expireAfterWrite(10, TimeUnit.MINUTES) //一个Key一定时间内没有进行更新，那么自动的将其清除，来减小缓存对内存的占用。
-                .expireAfterAccess(10, TimeUnit.MINUTES) //一个Key一定时间内没有使用，那么自动的将其清除，来减小缓存对内存的占用。
-                .weakKeys()
-                .weakValues()
-                .softValues()
-                .removalListener(notification->{
-                    System.out.println(notification.getKey() + ":" + notification.getValue());
-                })
-                .build(
-                        new CacheLoader<String, String>() {
-                            public String load(String key) throws Exception {
-                                return "null";
-                            }
-                        });
-
-    }
-
-    @Test
-    public void testCallableCache(){
+    public void testCallableCache() {
         Cache<String, String> cache = CacheBuilder.newBuilder()
                 .maximumSize(1000)
                 .build(); // look Ma, no CacheLoader
-            // If the key wasn't in the "easy to compute" group, we need to
-            // do things the hard way.
+        // If the key wasn't in the "easy to compute" group, we need to
+        // do things the hard way.
         try {
+//            cache.getIfPresent()
             cache.get("key", new Callable<String>() {
                 @Override
                 public String call() throws Exception {
@@ -50,8 +31,31 @@ public class GuavaCache {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
+        
     }
+    
+    @Test
+    public void testLoadingCache() {
+        LoadingCache<String, String> graphs = CacheBuilder.newBuilder()
+                .maximumSize(1000) //最大数量
+                .expireAfterWrite(10, TimeUnit.MINUTES) //一个Key一定时间内没有进行更新，那么自动的将其清除，来减小缓存对内存的占用。
+                .expireAfterAccess(10, TimeUnit.MINUTES) //一个Key一定时间内没有使用，那么自动的将其清除，来减小缓存对内存的占用。
+//                .weakKeys()
+//                .weakValues()
+//                .softValues()
+                .removalListener(notification -> {
+                    System.out.println(notification.getKey() + ":" + notification.getValue());
+                })
+                .build(
+                        new CacheLoader<String, String>() {
+                            public String load(String key) throws Exception {
+                                return "null";
+                            }
+                        });
 
-
+//        graphs.get();
+    
+    }
+    
+    
 }

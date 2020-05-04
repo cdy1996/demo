@@ -31,7 +31,7 @@ import java.util.function.Function;
  * 2019/9/22 0022 14:39
  */
 public class ReactorDemo {
-
+    
     @Before
     public void before() {
         Hooks.onOperatorDebug();
@@ -489,23 +489,23 @@ public class ReactorDemo {
     @Test
     public void testAppendBoomError() {
         Flux<String> source = Flux.just("foo", "bar");
-
+    
         StepVerifier.create(
                 appendCustomError(source))
                 .expectNext("foo")
                 .expectNext("bar")
                 .expectErrorMessage("custom")
                 .verify();
-
+    
     }
-
+    
     //RxJava2 实战知识梳理(3) - 优化搜索联想功能
     //https://www.jianshu.com/p/7995497baff5
     @Test
     public void testDelayAndSwitchMap() {
-
+    
         Flux.<String>create(e -> {
-
+        
             try {
                 Thread.sleep(300);
             } catch (InterruptedException ex) {
@@ -543,7 +543,39 @@ public class ReactorDemo {
                     return ee + ee;
                 }))
                 .subscribe(e -> System.out.println(e));
-
+    
+    }
+    
+    
+    @Test
+    public void testScan() {
+        Hooks.onOperatorDebug();
+//        StepVerifier.create(Flux.just("foo", "bar").name("!23"))
+//                .expectNext("foo")
+//                .expectComplete()
+//                .verify();
+        
+        Flux.just("foo", "bar").name("!23")
+                .subscribe(e -> System.out.println(e));
+        
+    }
+    
+    
+    @Test
+    public void testCombineLatest() throws IOException {
+        Flux.combineLatest(Flux.just(1, 1, 1, 1)/*.delayElements(Duration.ofMillis(10))*/,
+                Flux.just(2, 2, 2, 2)/*.delayElements(Duration.ofMillis(10))*/,
+                Flux.just(3, 3, 3, 3)/*.delayElements(Duration.ofMillis(10))*/,
+                Flux.just(4, 4, 4, 4)/*.delayElements(Duration.ofMillis(10))*/, (a) -> a)
+                .subscribe(e -> System.out.println(Arrays.toString(e)));
+        System.in.read();
+    }
+    
+    @Test
+    public void testFuseable() throws IOException {
+        Flux.zip(Flux.just(1, 1, 1), Flux.just(1, 2, 3))
+                .subscribe(e -> System.out.println(e.getT1()));
+        System.in.read();
     }
 }
 
