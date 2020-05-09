@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.concurrent.*;
 
 
+/**
+ * ctl 前3位标识状态runStateOf, 后面的标识容量workerCountOf
+ */
 public class ThreadPoolTest {
 
     static Logger log = LoggerFactory.getLogger(ThreadPoolTest.class);
