@@ -15,14 +15,19 @@ public class Markword {
         System.out.println("====");
 
 //        testBiased(o);
-        testLight(o);
-//        testWeight(o);
+//        testLight(o);
+        testWeight(o);
 
     }
 
     public static void testBiased(Object o) throws InterruptedException {
         Thread thread = new Thread(() -> {
             synchronized (o) {
+                try {
+                    Thread.sleep(10L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println(ClassLayout.parseInstance(o).toPrintable());
             }
         });
@@ -35,11 +40,21 @@ public class Markword {
     public static void testLight(Object o) throws InterruptedException {
         Thread thread = new Thread(() -> {
             synchronized (o) {
+                try {
+                    Thread.sleep(10L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println(ClassLayout.parseInstance(o).toPrintable());
             }
         });
         Thread thread2 = new Thread(() -> {
             synchronized (o) {
+                try {
+                    Thread.sleep(10L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println(ClassLayout.parseInstance(o).toPrintable());
             }
         });
@@ -49,6 +64,8 @@ public class Markword {
         Thread.sleep(10L);
         thread2.start();
         thread2.join();
+        Thread.sleep(10L);
+
         System.out.println(ClassLayout.parseInstance(o).toPrintable());
 
     }
@@ -57,11 +74,21 @@ public class Markword {
     public static void testWeight(Object o) throws InterruptedException {
         Thread thread = new Thread(() -> {
             synchronized (o) {
+                try {
+                    Thread.sleep(10L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println(ClassLayout.parseInstance(o).toPrintable());
             }
         });
         Thread thread2 = new Thread(() -> {
             synchronized (o) {
+                try {
+                    Thread.sleep(10L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println(ClassLayout.parseInstance(o).toPrintable());
             }
         });
@@ -70,5 +97,9 @@ public class Markword {
         thread.start();
         thread.join();
         thread2.join();
+        Thread.sleep(10L);
+
+        System.out.println("===" + ClassLayout.parseInstance(o).toPrintable());
+
     }
 }
