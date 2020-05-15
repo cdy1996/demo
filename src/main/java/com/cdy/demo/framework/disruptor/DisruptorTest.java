@@ -21,7 +21,7 @@ public class DisruptorTest {
 
         EventFactory<LongEvent> eventFactory = new LongEventFactory();
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        int ringBufferSize = 2; // RingBuffer 大小，必须是 2 的 N 次方；
+        int ringBufferSize = 4; // RingBuffer 大小，必须是 2 的 N 次方；
 
 
         Disruptor<LongEvent> disruptor = new Disruptor<>(eventFactory,
@@ -29,20 +29,20 @@ public class DisruptorTest {
                 new BlockingWaitStrategy());
 
         WorkHandler<LongEvent> eventHandler = (event) -> {
-            Disruptor<LongEvent> disruptor1 = disruptor;
-            System.out.println("消费者1消费消息:" + event);
+            System.out.println("消费者1 :" + event);
         };
-
         WorkHandler<LongEvent> eventHandler2 = (event) ->
-                System.out.println(2 + ":");
+                System.out.println("消费者2 :" + event);
 
         WorkHandler<LongEvent> eventHandler3 = (event) ->
-                System.out.println(3 + ":");
+                System.out.println("消费者3 :" + event);
 
-//        EventHandler<LongEvent> eventHandler1 = new LongEventHandler();
-//        EventHandler<LongEvent> eventHandler2 = new LongEventHandler();
+        EventHandler<LongEvent> eventHandler1 = (a, b, c) -> {
+            System.out.println("消费者4 :" + a);
+        };
         EventHandlerGroup<LongEvent> group =
-                disruptor.handleEventsWithWorkerPool(eventHandler);
+                disruptor.handleEventsWithWorkerPool(eventHandler, eventHandler2, eventHandler3);
+        group.then(eventHandler1);
 //        group.thenHandleEventsWithWorkerPool(eventHandler3);
 //        group.and()
 //        disruptor.handleEventsWithWorkerPool(eventHandler);
@@ -57,7 +57,7 @@ public class DisruptorTest {
 //        new LongEventProducer(ringBuffer).onData(allocate);
 
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 100; i++) {
             int finalI = i;
             new Thread(() -> {
                 long sequence = ringBuffer.next();//请求下一个事件序号；
