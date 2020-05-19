@@ -298,10 +298,10 @@
             <artifactId>jedis</artifactId>
             <version>2.9.0</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
-&lt;!&ndash;            <version>3.11.5</version>&ndash;&gt;
+            <!--            <version>3.11.5</version>-->
             <version>3.10.7</version>
             <exclusions>
                 <exclusion>
@@ -317,7 +317,7 @@
                     <groupId>io.reactivex.rxjava2</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
 
       <!--  <dependency>
             <groupId>org.influxdb</groupId>
@@ -347,30 +347,42 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- 对zookeeper的底层api的一些封装 -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <!-- 封装了一些高级特性，如：Cache事件监听、选举、分布式锁、分布式Barrier -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>2.12.0</version>
+        </dependency>
 
-       <!-- <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.11</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j</artifactId>
-                    <groupId>log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>zookeeper</artifactId>
-                    <groupId>org.apache.zookeeper</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jackson-databind</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
+        <!-- <dependency>
+             <groupId>org.apache.kafka</groupId>
+             <artifactId>kafka_2.11</artifactId>
+             <version>1.0.0</version>
+             <exclusions>
+                 <exclusion>
+                     <artifactId>log4j</artifactId>
+                     <groupId>log4j</groupId>
+                 </exclusion>
+                 <exclusion>
+                     <artifactId>zookeeper</artifactId>
+                     <groupId>org.apache.zookeeper</groupId>
+                 </exclusion>
+                 <exclusion>
+                     <artifactId>jackson-databind</artifactId>
+                     <groupId>com.fasterxml.jackson.core</groupId>
+                 </exclusion>
+                 <exclusion>
+                     <artifactId>slf4j-log4j12</artifactId>
+                     <groupId>org.slf4j</groupId>
+                 </exclusion>
+             </exclusions>
+         </dependency>-->
 
 
 
