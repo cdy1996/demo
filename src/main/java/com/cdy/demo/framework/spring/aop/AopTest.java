@@ -14,27 +14,6 @@ import org.springframework.aop.support.DelegatingIntroductionInterceptor;
 
 import java.lang.reflect.Method;
 
-/**
- * Created by 陈东一
- * 2018/2/14 16:38
- */
-interface iFoo {
-    void fun1();
-    
-    void fun2();
-}
-
-class Foo implements iFoo {
-    public void fun1() {
-        System.out.println("外部方法");
-//        fun2();
-    }
-    
-    public void fun2() {
-        System.out.println("内部方法");
-    }
-}
-
 class Before implements MethodBeforeAdvice {
     
     public void before(Method method, Object[] objects, Object o) throws Throwable {

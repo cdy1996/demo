@@ -1,0 +1,26 @@
+package com.cdy.demo.framework.spring.circulReference;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.statemachine.config.common.annotation.EnableAnnotationConfiguration;
+
+/**
+ * 特殊的循环依赖测试
+ * Created by 陈东一
+ * 2020/5/21 0021 22:08
+ */
+@Configuration(proxyBeanMethods = false)
+@Import(value = {C1.class, C2.class})
+@EnableAnnotationConfiguration
+public class CirculReferenceTest {
+    
+    
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(CirculReferenceTest.class);
+        
+        Object c1 = annotationConfigApplicationContext.getBean("c1");
+        
+        annotationConfigApplicationContext.stop();
+    }
+}

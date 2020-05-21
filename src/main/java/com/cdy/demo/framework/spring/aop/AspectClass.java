@@ -1,6 +1,9 @@
 package com.cdy.demo.framework.spring.aop;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 
 /**
  * Created by 陈东一
@@ -8,11 +11,19 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class AspectClass {
-        
-        //    @Pointcut()
-        @org.aspectj.lang.annotation.Before("execution(* fun1())")
-        public void before() {
-            System.out.println("before");
-        }
+    
+    //    @Pointcut()
+    
+    @Pointcut("execution(public * com.cdy.demo.framework.spring..*.*(..))")
+    public void before() {
+    }
+    
+    @Around("pointCut()")
+    public Object myAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("before");
+        Object obj = joinPoint.proceed();
+        System.out.println("after");
+        return obj;
+    }
     
 }
