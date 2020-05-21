@@ -12,13 +12,11 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class AspectClass {
     
-    //    @Pointcut()
-    
-    @Pointcut("execution(public * com.cdy.demo.framework.spring..*.*(..))")
+    @Pointcut("execution(public * com.cdy.demo.framework.spring.aop.*.*(..))")
     public void before() {
     }
     
-    @Around("pointCut()")
+    @Around("before()")
     public Object myAround(ProceedingJoinPoint joinPoint) throws Throwable {
         System.out.println("before");
         Object obj = joinPoint.proceed();
