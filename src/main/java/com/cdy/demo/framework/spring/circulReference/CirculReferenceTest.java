@@ -10,7 +10,7 @@ import org.springframework.statemachine.config.common.annotation.EnableAnnotatio
  * Created by 陈东一
  * 2020/5/21 0021 22:08
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @Import(value = {C1.class, C2.class})
 @EnableAnnotationConfiguration
 public class CirculReferenceTest {
