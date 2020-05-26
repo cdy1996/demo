@@ -495,18 +495,33 @@
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
         </dependency>
-
-       <!-- <dependency>
-            <groupId>org.apache.shardingsphere</groupId>
-            <artifactId>sharding-jdbc-core</artifactId>
-            <version>4.0.0-RC1</version>
+        <dependency>
+            <groupId>com.github.rholder</groupId>
+            <artifactId>guava-retrying</artifactId>
+            <version>2.0.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>guava</artifactId>
                     <groupId>com.google.guava</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jsr305</artifactId>
+                    <groupId>com.google.code.findbugs</groupId>
+                </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
+
+        <!-- <dependency>
+             <groupId>org.apache.shardingsphere</groupId>
+             <artifactId>sharding-jdbc-core</artifactId>
+             <version>4.0.0-RC1</version>
+             <exclusions>
+                 <exclusion>
+                     <artifactId>guava</artifactId>
+                     <groupId>com.google.guava</groupId>
+                 </exclusion>
+             </exclusions>
+         </dependency>-->
 
         <dependency>
             <groupId>org.javassist</groupId>
