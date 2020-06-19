@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-4.2.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        ">
+
+
+    <!-- 织入模式aop -->
+    <beans profile="ltw">
+        <context:load-time-weaver aspectj-weaving="on"/>
+        <bean id="foo" class="com.cdy.demo.framework.spring.aop.Foo"/>
+    </beans>
+
+
+    <!-- 注解模式aop -->
+    <beans profile="annotation">
+        <aop:aspectj-autoproxy/>
+        <context:annotation-config/>
+        <context:component-scan base-package="com.cdy.demo.framework.spring.aop"/>
+    </beans>
+
+
+    <beans profile="xml">
+
+        <bean id="foo" class="com.cdy.demo.framework.spring.aop.Foo"/>
+        <!--切面类-->
+        <bean id="aspect" class="com.cdy.demo.framework.spring.aop.AspectClass"/>
+
+        <bean id="before" class="com.cdy.demo.framework.spring.aop.Before"/>
+
+        <!--面向切面编程-->
+        <aop:config>
+            <aop:pointcut id="action" expression="execution(* *.*(..))"/>
+            <!--定义切面-->
+            <aop:aspect ref="aspect">
+                <!--定义切点-->
+                <!--<aop:pointcut id="action" expression="execution(* *.*(..))"/>-->
+                <!-- 声明前置通知 (在切点方法被执行前调用)-->
+                <aop:before method="before" pointcut-ref="action"/>
+                <!-- 声明后置通知 (在切点方法被执行后调用)-->
+                <aop:around method="myAround" pointcut-ref="action"/>
+            </aop:aspect>
+        </aop:config>
+
+        <!--  <aop:config>
+              <aop:advisor advice-ref="before" pointcut-ref="action"/>
+          </aop:config>-->
+    </beans>
+
+
+</beans>

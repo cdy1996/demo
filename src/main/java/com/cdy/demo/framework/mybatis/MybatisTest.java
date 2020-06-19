@@ -78,7 +78,7 @@ public class MybatisTest {
     
     @Test
     public void test2() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:com/cdy/demo/framework/spring/applicationContext.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-mybatis.xml");
         UserMapper userMapper = (UserMapper) context.getBean("user1Dao");
         User1 user1 = userMapper.selectOne(1);
         log.info(user1.toString());

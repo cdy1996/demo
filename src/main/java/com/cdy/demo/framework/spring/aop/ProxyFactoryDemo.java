@@ -15,7 +15,8 @@ import org.springframework.aop.support.DelegatingIntroductionInterceptor;
 import java.lang.reflect.Method;
 
 class Before implements MethodBeforeAdvice {
-    
+
+    @Override
     public void before(Method method, Object[] objects, Object o) throws Throwable {
         System.out.println("before");
     }
@@ -65,14 +66,14 @@ class Boo implements iBoo, IntroductionInterceptor {
 }
 
 
-public class AopTest {
-    
-    
+public class ProxyFactoryDemo {
+
+
     public static void main(String[] args) {
-        
+
         Foo foo = new Foo();
         BeforeAdvice advice = new Before();
-        
+
         ProxyFactory pf = new ProxyFactory();
         pf.setOptimize(true);//启用Cglib2AopProxy创建代理
         pf.setProxyTargetClass(true);
